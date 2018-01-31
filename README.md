@@ -2,6 +2,7 @@
 
 The goal is to be able to order a cocktail via a phone or PC. The cocktail machine with espressif WROOM32 exposes a web page accessible via an IP on the home internet network.
 
+You have fuu documentation into the doc repertory.
 
 ## DEMO :
 
