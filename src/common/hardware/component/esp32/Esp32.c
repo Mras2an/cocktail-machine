@@ -10,6 +10,8 @@
 
 #include "Cocktail.h"
 #include "QueueCocktail.h"
+#include "FileSystem.h"
+#include "Ota.h"
 
 #ifdef SMART_CONFIG
   #include "SmartConfig.h"
@@ -117,8 +119,20 @@ static esp_err_t Esp32_eventHandler(void *ctx, system_event_t *event)
       Esp32_saveMask((const char *)ip4addr_ntoa(&event->event_info.got_ip.ip_info.netmask));
       Esp32_saveGw((const char *)ip4addr_ntoa(&event->event_info.got_ip.ip_info.gw));
       Esp32_getMac();
-      Cocktail_init();
-      QueueCocktail_init();
+
+      char * update = Fs_read("Update", "Update");
+      if (update != NULL)
+      {
+    	  Fs_delete("Update", "Update");
+    	  OsFree(update);
+    	  Ota_begin();
+      }
+      else
+      {
+          Cocktail_init();
+          QueueCocktail_init();
+      }
+
 
       if(!SmartConfig_isSmartconfigEnable())
       {

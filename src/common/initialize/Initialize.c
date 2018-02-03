@@ -6,6 +6,7 @@
 #include "QueueCocktail.h"
 #include "MotorHandling.h"
 #include "Wifi.h"
+#include "Ota.h"
 
 /*!************************************************************************************************
  * \fn         void Initialize_init(void)
@@ -16,6 +17,7 @@ void Initialize_init(void)
 {
   Fs_init();
   CpuDelay_init();
+  Ota_init();
   //Wifi_saveSSIDAndPass("xxxx", "xxxxx");
   sLedRgbGpioConfig_t ledConfig;
   ledConfig.red = LED_GPIO_RED;

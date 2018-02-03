@@ -22,6 +22,8 @@
 #include "QueueCocktail.h"
 #include <stdio.h>
 #include "Debug.h"
+#include "FileSystem.h"
+#include "System.h"
 
 #define MY_IP "192.168.1.51/"
 #define delay(ms) (vTaskDelay(ms/portTICK_RATE_MS))
@@ -307,11 +309,19 @@ static void http_server_netconn_serve(struct netconn *conn)
         BarDebug_info("Free Heap = %d o\n", OsGetFreeHeapSize());
         QueueCocktail_received(numCocktail);
       }
-      /*
+
       if(strncmp(&buf[5], "Update", strlen("Update")) == 0)
       {
+    	  if(Fs_write("Update", "Update", "Update") != ESP_OK)
+    	  {
+    	    BarDebug_err("Error to update\n");
+    	  }
+    	  else
+    	  {
+    		  System_cpuReset();
+    	  }
       }
-      */
+
     }
   }
 
