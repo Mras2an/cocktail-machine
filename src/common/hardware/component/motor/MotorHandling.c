@@ -87,7 +87,7 @@ static void MotorHandling_get2ml()
     CpuDelay_ms(1);
   }
 
-  CpuDelay_ms(1100);
+  CpuDelay_ms(2000);
   uint32_t bp2[1];
   Gpio_get(DETECTION_AXE_Y, bp2);
   BAR_ERROR_CHECK(Gpio_set(MOTOR_AXE_Y_DIR, BAR_LEVEL_HIGH));
