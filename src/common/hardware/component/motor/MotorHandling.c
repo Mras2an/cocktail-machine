@@ -6,7 +6,7 @@
 
 //#define MOTOR_OFFSET 200 //360°
 #define MOTOR_OFFSET 495   //10cm
-#define MOTOR_LIMIT 3300
+#define MOTOR_LIMIT 800
 
 /******************************************************************************
  * FunctionName : void MotorHandling_init(void)
