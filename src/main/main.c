@@ -21,9 +21,9 @@
 void app_main(void)
 {
   /* gpio switch stop detection*/
-  BAR_ERROR_CHECK(Gpio_configure(35, BAR_GPIO_MODE_INPUT, BAR_GPIO_PULL_NONE));
+  BAR_ERROR_CHECK(Gpio_configure(DETECTION_AXE_X, BAR_GPIO_MODE_INPUT, BAR_GPIO_PULL_NONE));
   /* gpio switch stop detection*/
-  BAR_ERROR_CHECK(Gpio_configure(34, BAR_GPIO_MODE_INPUT, BAR_GPIO_PULL_NONE));
+  BAR_ERROR_CHECK(Gpio_configure(DETECTION_AXE_Y, BAR_GPIO_MODE_INPUT, BAR_GPIO_PULL_NONE));
 
   Initialize_init();
   BarDebug_info("AB Free Heap at %d = %d\n", __LINE__, OsGetFreeHeapSize());

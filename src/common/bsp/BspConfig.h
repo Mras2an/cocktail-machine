@@ -4,7 +4,6 @@
 #ifdef ESP32_4MB
 
   #define NB_BINARY_BLOCK           254
-  #define BINARY_SIZE               0x000FE000
   #define HW_BLOCK_SIZE             4096
 
   /* Partition addr */
