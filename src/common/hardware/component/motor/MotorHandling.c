@@ -193,14 +193,16 @@ void MotorHandling_getAMeasureOnY(int measure)
 void MotorHandling_getAMeasureOnPump(int measure)
 {
   BarDebug_info("\t\t MotorHandling_getAMeasureOnPump \n");
-  BAR_ERROR_CHECK(Gpio_set(MOTOR_PUMP_1, BAR_LEVEL_HIGH));
+  BAR_ERROR_CHECK(Gpio_set(MOTOR_PUMP_3, BAR_LEVEL_HIGH));
+
+  CpuDelay_ms(500);
 
   for(int j = 0; j < measure; j++)
   {
-    CpuDelay_ms(1000);
+    CpuDelay_ms(600);
   }
 
-  BAR_ERROR_CHECK(Gpio_set(MOTOR_PUMP_1, BAR_LEVEL_LOW));
+  BAR_ERROR_CHECK(Gpio_set(MOTOR_PUMP_3, BAR_LEVEL_LOW));
 }
 
 /******************************************************************************
