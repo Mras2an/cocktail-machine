@@ -245,38 +245,6 @@ static void html_indexEnd(char * data)
 }
 
 /******************************************************************************
- * FunctionName : static esp_err_t event_handler(void *ctx, system_event_t *event)
- * Parameters   : void *
- * Parameters   : system_event_t *
- * Returns      : none
- *******************************************************************************/
-//static esp_err_t event_handler(void *ctx, system_event_t *event)
-//{
-//  switch (event->event_id)
-//  {
-//    case SYSTEM_EVENT_STA_START:
-//      esp_wifi_connect();
-//    break;
-//    case SYSTEM_EVENT_STA_GOT_IP:
-//      xEventGroupSetBits(wifi_event_group, CONNECTED_BIT);
-//      BarDebug_info("got ip\n");
-//      BarDebug_info("ip: " IPSTR "\n", IP2STR(&event->event_info.got_ip.ip_info.ip));
-//      BarDebug_info("netmask: " IPSTR "\n", IP2STR(&event->event_info.got_ip.ip_info.netmask));
-//      BarDebug_info("gw: " IPSTR "\n", IP2STR(&event->event_info.got_ip.ip_info.gw));
-//      BarDebug_info("\n");
-//      fflush(stdout);
-//    break;
-//    case SYSTEM_EVENT_STA_DISCONNECTED:
-//      esp_wifi_connect();
-//      xEventGroupClearBits(wifi_event_group, CONNECTED_BIT);
-//    break;
-//    default:
-//      break;
-//  }
-//  return ESP_OK;
-//}
-
-/******************************************************************************
  * FunctionName : static void http_server_netconn_serve(struct netconn *conn)
  * Parameters   : netconn *
  * Returns      : none
