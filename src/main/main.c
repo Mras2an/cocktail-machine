@@ -29,8 +29,15 @@ void app_main(void)
   BarDebug_info("AB Free Heap at %d = %d\n", __LINE__, OsGetFreeHeapSize());
   System_init();
 
+//  BAR_ERROR_CHECK(Gpio_configure(BUTTON_GPIO_MODE, BAR_GPIO_MODE_INPUT, BAR_GPIO_PULL_NONE));
+//  uint32_t bp[1];
+//  Gpio_get(BUTTON_GPIO_MODE, bp);
+//  if(bp[0] == 0)
+//  {
+//    SmartConfig_factoryReset();
+//  }
+
   #ifdef SMART_CONFIG
-  //SmartConfig_factoryReset();
   SmartConfig_init();
   #endif
 

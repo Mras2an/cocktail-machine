@@ -140,6 +140,7 @@ static esp_err_t Esp32_eventHandler(void *ctx, system_event_t *event)
 
       if(!SmartConfig_isSmartconfigEnable())
       {
+    	  BarDebug_info("stop smartconfig timer\n");
         if(OsTimerStop(esp32Timer, 0) != pdPASS)
         {
           BarDebug_err("Stop timer\n");

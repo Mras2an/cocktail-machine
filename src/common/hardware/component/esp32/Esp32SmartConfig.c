@@ -6,7 +6,7 @@
 #include "Wifi.h"
 #include "LedRGBHandling.h"
 #include "System.h"
-
+#include "CpuDelay.h"
 typedef struct sSmartConfig
 {
   char * ssid;
@@ -93,7 +93,7 @@ void Esp32SmartConfig_groupClearBits()
 void Esp32SmartConfig_createTask()
 {
   if(this->smartConfigEnable)
-    OsTaskCreate(Esp32SmartConfig_task, "Esp32SmartConfig_task", 6096, NULL, 3, NULL);
+    OsTaskCreate(Esp32SmartConfig_task, "Esp32SmartConfig_task", 4096, NULL, 3, NULL);
 }
 
 /*!*****************************************************************************
@@ -118,6 +118,7 @@ static void Esp32SmartConfig_callback(smartconfig_status_t status, void * pdata)
 
       case SC_STATUS_GETTING_SSID_PSWD:
         BarDebug_info("SC_STATUS_GETTING_SSID_PSWD\n");
+        LedRGBHandling_ExecuteLedTaskFromISR(RED_LED_FAST_BLINKING);
         smartconfigTimer = OsTimerCreate("Timer", SMARTCONFIG_PERIOD, pdTRUE, 0, Esp32SmartConfig_Callback);
 
         if(smartconfigTimer == NULL)
@@ -147,6 +148,14 @@ static void Esp32SmartConfig_callback(smartconfig_status_t status, void * pdata)
           memcpy(this->ssid, wifi_config->sta.ssid, ssidLen);
           memcpy(this->pass, wifi_config->sta.password, passLen);
         }
+
+        if(OsTimerStop(smartconfigTimer, 0) != pdPASS)
+        {
+          BarDebug_err("Stop timer");
+        }
+        // save if you have error: "smartconfig: send failed, errno 118"
+        Wifi_saveSSIDAndPass(this->ssid, this->pass);
+
         ESP_ERROR_CHECK(esp_wifi_disconnect());
         ESP_ERROR_CHECK(esp_wifi_set_config(ESP_IF_WIFI_STA, wifi_config));
         ESP_ERROR_CHECK(esp_wifi_connect());
