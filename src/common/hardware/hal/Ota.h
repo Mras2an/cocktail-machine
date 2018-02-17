@@ -4,6 +4,7 @@
 #ifdef ESP32
   #include "Esp32Ota.h"
   #define Ota_init                   Esp32Ota_init
+  #define Ota_InitTask               Esp32Ota_InitTask
   #define Ota_inProgress             Esp32Ota_inProgress
   #define Ota_begin                  Esp32Ota_begin
   #define Ota_writeHexData           Esp32Ota_writeHexData

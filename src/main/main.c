@@ -28,8 +28,6 @@ void app_main(void)
   Initialize_init();
   BarDebug_info("AB Free Heap at %d = %d\n", __LINE__, OsGetFreeHeapSize());
   System_init();
-  BarDebug_info("LED BLUE\n");
-  LedRGBHandling_ExecuteLedTaskFromISR(BLUE_LED);
 
   #ifdef SMART_CONFIG
   //SmartConfig_factoryReset();

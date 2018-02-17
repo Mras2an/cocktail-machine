@@ -322,6 +322,16 @@ static void http_server_netconn_serve(struct netconn *conn)
     	  }
       }
 
+      if(strncmp(&buf[5], "AxeX+1", strlen("AxeX+1")) == 0)
+      {
+        BarDebug_info("Test AxeX+1\n");
+      }
+
+      if(strncmp(&buf[5], "Pump+5", strlen("Pump+5")) == 0)
+      {
+        BarDebug_info("Test AxeY+5\n");
+      }
+
     }
   }
 
@@ -378,7 +388,11 @@ void Html_init(void)
   memset(data, '\0', strlen(info) + 4);
   sprintf(data, info, (OsGetFreeHeapSize()/1024));
   strcat(http_index_hml, data);
-  //html_addButtonCss(data, "Update", "Update");
+
+  html_addButtonCss(http_index_hml, "Update", "Update");
+  html_addButtonCss(http_index_hml, "AxeX+1", "AxeX+1");
+  html_addButtonCss(http_index_hml, "Pump+5", "Pump+5");
+
   html_indexEnd(http_index_hml);
   xTaskCreate(&http_server, "http_server", 9216, NULL, 5, NULL);
 }

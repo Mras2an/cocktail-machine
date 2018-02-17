@@ -54,7 +54,7 @@ static esp_err_t Esp32_eventHandler(void *ctx, system_event_t *event)
   {
     case SYSTEM_EVENT_STA_START:
     {
-      BarDebug_info("started");
+      BarDebug_info("started\n");
       #ifdef SMART_CONFIG
       SmartConfig_createTask();
       #endif
@@ -66,12 +66,12 @@ static esp_err_t Esp32_eventHandler(void *ctx, system_event_t *event)
 
         if(esp32Timer == NULL)
         {
-          BarDebug_err("Create timer");
+          BarDebug_err("Create timer\n");
         }
 
         if(OsTimerReset(esp32Timer, 0) != pdPASS)
         {
-          BarDebug_err("Reset timer");
+          BarDebug_err("Reset timer\n");
         }
 
         uint32_t bp1[1];
@@ -81,7 +81,7 @@ static esp_err_t Esp32_eventHandler(void *ctx, system_event_t *event)
         {
           if(OsTimerStop(esp32Timer, 0) != pdPASS)
           {
-            BarDebug_err("Stop timer");
+            BarDebug_err("Stop timer\n");
           }
         }
       }
@@ -90,7 +90,7 @@ static esp_err_t Esp32_eventHandler(void *ctx, system_event_t *event)
 
     case SYSTEM_EVENT_STA_DISCONNECTED:
     {
-      BarDebug_info("disconnected");
+      BarDebug_info("disconnected\n");
       #ifdef SMART_CONFIG
       SmartConfig_groupClearBits();
       #endif
@@ -99,13 +99,13 @@ static esp_err_t Esp32_eventHandler(void *ctx, system_event_t *event)
 
     case SYSTEM_EVENT_SCAN_DONE:
     {
-      BarDebug_info("Scan done");
+      BarDebug_info("Scan done\n");
     }
     break;
 
     case SYSTEM_EVENT_STA_CONNECTED:
     {
-      BarDebug_info("connected");
+      BarDebug_info("connected\n");
     }
     break;
 
@@ -114,7 +114,7 @@ static esp_err_t Esp32_eventHandler(void *ctx, system_event_t *event)
       #ifdef SMART_CONFIG
       SmartConfig_groupSetBits();
       #endif
-      BarDebug_info("dhcp => event_handler:SYSTEM_EVENT_STA_GOT_IP!");
+      BarDebug_info("dhcp => event_handler:SYSTEM_EVENT_STA_GOT_IP!\n");
       Esp32_saveIp((const char *)ip4addr_ntoa(&event->event_info.got_ip.ip_info.ip));
       Esp32_saveMask((const char *)ip4addr_ntoa(&event->event_info.got_ip.ip_info.netmask));
       Esp32_saveGw((const char *)ip4addr_ntoa(&event->event_info.got_ip.ip_info.gw));
@@ -123,12 +123,16 @@ static esp_err_t Esp32_eventHandler(void *ctx, system_event_t *event)
       char * update = Fs_read("Update", "Update");
       if (update != NULL)
       {
+          BarDebug_info("LED GREEN\n");
+          LedRGBHandling_ExecuteLedTaskFromISR(GREEN_LED);
     	  Fs_delete("Update", "Update");
     	  OsFree(update);
-    	  Ota_begin();
+    	  Ota_InitTask();
       }
       else
       {
+          BarDebug_info("LED BLUE\n");
+          LedRGBHandling_ExecuteLedTaskFromISR(BLUE_LED);
           Cocktail_init();
           QueueCocktail_init();
       }
@@ -138,7 +142,7 @@ static esp_err_t Esp32_eventHandler(void *ctx, system_event_t *event)
       {
         if(OsTimerStop(esp32Timer, 0) != pdPASS)
         {
-          BarDebug_err("Stop timer");
+          BarDebug_err("Stop timer\n");
         }
       }
     }
@@ -158,13 +162,13 @@ break;
 
     case SYSTEM_EVENT_STA_STOP:
 {
-BarDebug_info("stopped");
+BarDebug_info("stopped\n");
 }
 break;
 
     default:
 {
-BarDebug_info("Unhandled event (%d)", event->event_id);
+BarDebug_info("Unhandled event (%d)\n", event->event_id);
 }
 break;
   }
@@ -341,7 +345,7 @@ int Esp32_getRam(void)
  *******************************************************************************/
 void Esp32_cpuReset()
 {
-  BarDebug_err("");
+  BarDebug_err("\n");
   esp_restart();
 }
 

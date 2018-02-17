@@ -15,6 +15,8 @@ typedef enum
 
 void Esp32Ota_init();
 
+void Esp32Ota_InitTask();
+
 int Esp32Ota_inProgress();
 
 TOtaResult Esp32Ota_begin();
