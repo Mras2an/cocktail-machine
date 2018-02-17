@@ -87,7 +87,7 @@ static void MotorHandling_get10ml()
     CpuDelay_ms(1);
   }
 
-  CpuDelay_ms(800);
+  CpuDelay_ms(600);
   uint32_t bp2[1];
   Gpio_get(DETECTION_AXE_Y, bp2);
   BAR_ERROR_CHECK(Gpio_set(MOTOR_AXE_Y_DIR, BAR_LEVEL_HIGH));
@@ -183,14 +183,15 @@ void MotorHandling_getAMeasureOnY(int measure)
 }
 
 /******************************************************************************
- * FunctionName : void MotorHandling_getAMeasureOnPump(int measure)
+ * FunctionName : void MotorHandling_getAMeasureOnPump(int measure, int pump)
+ * Parameters   : int
  * Parameters   : int
  * Returns      : none
  *******************************************************************************/
-void MotorHandling_getAMeasureOnPump(int measure)
+void MotorHandling_getAMeasureOnPump(int measure, int pump)
 {
   BarDebug_info("\t\t MotorHandling_getAMeasureOnPump \n");
-  BAR_ERROR_CHECK(Gpio_set(MOTOR_PUMP_3, BAR_LEVEL_HIGH));
+  BAR_ERROR_CHECK(Gpio_set(pump, BAR_LEVEL_HIGH));
 
   CpuDelay_ms(500);
 
@@ -199,7 +200,7 @@ void MotorHandling_getAMeasureOnPump(int measure)
     CpuDelay_ms(550);
   }
 
-  BAR_ERROR_CHECK(Gpio_set(MOTOR_PUMP_3, BAR_LEVEL_LOW));
+  BAR_ERROR_CHECK(Gpio_set(pump, BAR_LEVEL_LOW));
 }
 
 /******************************************************************************

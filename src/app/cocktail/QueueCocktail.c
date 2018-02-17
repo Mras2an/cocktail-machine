@@ -4,6 +4,7 @@
 #include "Bsp.h"
 #include "MotorHandling.h"
 #include "LedRGBHandling.h"
+#include "Board.h"
 
 typedef struct sCtxQueueCocktail
 {
@@ -18,6 +19,7 @@ typedef struct
   int bottle[MAX_BOTTLE];
   int position[MAX_BOTTLE];
   int measure[MAX_BOTTLE];
+  char note[MAX_BOTTLE];
 } sBottleList;
 sBottleList bottleList;
 
@@ -65,7 +67,8 @@ static void QueueCocktail_receivedTask(void* pvParameters)
     memset(bottleList.bottle, 255, MAX_BOTTLE);
     memset(bottleList.position, 255, MAX_BOTTLE);
     memset(bottleList.measure, 255, MAX_BOTTLE);
-    int nbIngredients = Cocktail_getDispoIngredients(bottleList.bottle, bottleList.position, bottleList.measure, QueueCocktail);
+    memset(bottleList.note, 255, MAX_BOTTLE);
+    int nbIngredients = Cocktail_getDispoIngredients(bottleList.bottle, bottleList.position, bottleList.measure, bottleList.note, QueueCocktail);
     BarDebug_info("   nb ingredients: %i\n\n", nbIngredients);
     int goToPosition = 0;
     int currentPosition = 0;
@@ -92,7 +95,19 @@ static void QueueCocktail_receivedTask(void* pvParameters)
         }
         else
         {
-          MotorHandling_getAMeasureOnPump(bottleList.measure[i]);
+          BarDebug_info("Pump number:%c\n", bottleList.note[i]);
+          if(bottleList.note[i] == '1')
+          {
+            MotorHandling_getAMeasureOnPump(bottleList.measure[i], MOTOR_PUMP_3);
+          }else if(bottleList.note[i] == '2')
+          {
+            MotorHandling_getAMeasureOnPump(bottleList.measure[i], MOTOR_PUMP_2);
+          }else if(bottleList.note[i] == '3')
+          {
+            MotorHandling_getAMeasureOnPump(bottleList.measure[i], MOTOR_PUMP_1);
+          }else {
+            BarDebug_err("Pump found\n");
+          }
         }
       }
     }

@@ -7,7 +7,7 @@ void MotorHandling_setPositionOnX(int position);
 
 void MotorHandling_getAMeasureOnY(int measure);
 
-void MotorHandling_getAMeasureOnPump(int measure);
+void MotorHandling_getAMeasureOnPump(int measure, int pump);
 
 void MotorHandling_setInitialPosition();
 

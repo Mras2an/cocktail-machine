@@ -169,14 +169,15 @@ void Cocktail_createHtmlCodeForCocktails(char * data)
 }
 
 /******************************************************************************
- * FunctionName : int Cocktail_getDispoIngredients(int * qBottle, int * qPosition, int * qMeasure, int numCocktail)
+ * FunctionName : int Cocktail_getDispoIngredients(int * qBottle, int * qPosition, int * qMeasure, char * qNote, int numCocktail)
  * Parameters   : int *
  * Parameters   : int *
  * Parameters   : int *
+ * Parameters   : char *
  * Parameters   : int
  * Returns      : int
  *******************************************************************************/
-int Cocktail_getDispoIngredients(int * qBottle, int * qPosition, int * qMeasure, int numCocktail)
+int Cocktail_getDispoIngredients(int * qBottle, int * qPosition, int * qMeasure, char * qNote, int numCocktail)
 {
   int i, j = 0, k;
 
@@ -194,6 +195,7 @@ int Cocktail_getDispoIngredients(int * qBottle, int * qPosition, int * qMeasure,
             BarDebug_info("name: %s\n", cocktail[numCocktail].ingredient[k].name);
             qBottle[j] = i;
             qPosition[j] = bottle[i].position;
+            qNote[j] = bottle[i].note[0];
             qMeasure[j] =
               cocktail[numCocktail].ingredient[k].measure;
             j++;

@@ -16,6 +16,6 @@ void Cocktail_createHtmlCodeForCocktails(char * data);
 
 int Cocktail_isCocktailExiste(char * data);
 
-int Cocktail_getDispoIngredients(int * qBottle, int * qPosition, int * qMeasure, int numCocktail);
+int Cocktail_getDispoIngredients(int * qBottle, int * qPosition, int * qMeasure, char * qNote, int numCocktail);
 
 #endif /* COCKTAIL_H_ */
