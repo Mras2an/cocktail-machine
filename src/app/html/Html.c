@@ -24,6 +24,7 @@
 #include "Debug.h"
 #include "FileSystem.h"
 #include "System.h"
+#include "MotorHandling.h"
 
 #define MY_IP "192.168.1.51/"
 #define delay(ms) (vTaskDelay(ms/portTICK_RATE_MS))
@@ -293,11 +294,13 @@ static void http_server_netconn_serve(struct netconn *conn)
       if(strncmp(&buf[5], "AxeX+1", strlen("AxeX+1")) == 0)
       {
         BarDebug_info("Test AxeX+1\n");
+        MotorHandling_setPositionOnX(1);
       }
 
       if(strncmp(&buf[5], "Pump+5", strlen("Pump+5")) == 0)
       {
-        BarDebug_info("Test AxeY+5\n");
+        BarDebug_info("Test Pump+5\n");
+        MotorHandling_getAMeasureOnPump(5);
       }
 
     }
