@@ -60,12 +60,21 @@ void MotorHandling_setPositionOnX(int position)
     end = (position * (-1)) * MOTOR_OFFSET;
   }
 
+//  uint32_t bp1[1];
   for(int i = 0; i < end; i++)
   {
     BAR_ERROR_CHECK(Gpio_set(MOTOR_AXE_X_CLK, BAR_LEVEL_LOW));
     CpuDelay_ms(1);
     BAR_ERROR_CHECK(Gpio_set(MOTOR_AXE_X_CLK, BAR_LEVEL_HIGH));
     CpuDelay_ms(1);
+//    if (position != 1)
+//    {
+//    	Gpio_get(DETECTION_AXE_X, bp1);
+//    	if (!bp1[0]) {
+//          BarDebug_info("Stop motor.\n");
+//    		break;
+//      }
+//    }
   }
 }
 
