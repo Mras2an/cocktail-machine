@@ -12,6 +12,7 @@
 #include "QueueCocktail.h"
 #include "FileSystem.h"
 #include "Ota.h"
+#include "mdns.h"
 
 #ifdef SMART_CONFIG
   #include "SmartConfig.h"
@@ -137,6 +138,12 @@ static esp_err_t Esp32_eventHandler(void *ctx, system_event_t *event)
           QueueCocktail_init();
       }
 
+      mdns_server_t * mdns = NULL;
+      mdns_init(TCPIP_ADAPTER_IF_STA, &mdns);
+      ESP_ERROR_CHECK( mdns_set_hostname(mdns, "mybar") );
+      ESP_ERROR_CHECK( mdns_set_instance(mdns, "mybar") );
+      ESP_ERROR_CHECK( mdns_service_add(mdns, "_http", "_tcp", 80) );
+      ESP_ERROR_CHECK( mdns_service_instance_set(mdns, "_http", "_tcp", "mybar") );
 
       if(!SmartConfig_isSmartconfigEnable())
       {
@@ -317,6 +324,7 @@ void Esp32_init(void)
 
   BarDebug_info("Free Heap at %d = %d\n", __LINE__, OsGetFreeHeapSize());
   ESP_ERROR_CHECK(esp_event_loop_init(Esp32_eventHandler, NULL));
+
 }
 
 /******************************************************************************
