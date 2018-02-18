@@ -96,6 +96,7 @@ static void QueueCocktail_receivedTask(void* pvParameters)
         else
         {
           BarDebug_info("Pump number:%c\n", bottleList.note[i]);
+          MotorHandling_setInitialPosition();
           if(bottleList.note[i] == '1')
           {
             MotorHandling_getAMeasureOnPump(bottleList.measure[i], MOTOR_PUMP_3);
