@@ -294,14 +294,16 @@ static void http_server_netconn_serve(struct netconn *conn)
 
       if(strncmp(&buf[5], "AxeX+1", strlen("AxeX+1")) == 0)
       {
-        BarDebug_info("Test AxeX+1\n");
+        BarDebug_info("Move AxeX+1\n");
         MotorHandling_setPositionOnX(1);
       }
 
-      if(strncmp(&buf[5], "Pump+5", strlen("Pump+5")) == 0)
+      if(strncmp(&buf[5], "Pump+2", strlen("Pump+2")) == 0)
       {
-        BarDebug_info("Test Pump+5\n");
-        MotorHandling_getAMeasureOnPump(5, MOTOR_PUMP_3);
+        BarDebug_info("Clean Pump+2\n");
+        MotorHandling_getAMeasureOnPump(2, MOTOR_PUMP_3);
+        MotorHandling_getAMeasureOnPump(2, MOTOR_PUMP_2);
+        MotorHandling_getAMeasureOnPump(2, MOTOR_PUMP_1);
       }
 
     }
@@ -363,7 +365,7 @@ void Html_init(void)
 
   html_addButtonCss(http_index_hml, "Update", "Update");
   html_addButtonCss(http_index_hml, "AxeX+1", "AxeX+1");
-  html_addButtonCss(http_index_hml, "Pump+5", "Pump+5");
+  html_addButtonCss(http_index_hml, "Pump+2", "Pump+2");
 
   html_indexEnd(http_index_hml);
   xTaskCreate(&http_server, "http_server", 9216, NULL, 5, NULL);
