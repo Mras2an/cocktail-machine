@@ -24,7 +24,7 @@ void Esp32Wifi_init()
   ESP_ERROR_CHECK(esp_wifi_set_config(WIFI_IF_STA, &sta_config));
   ESP_ERROR_CHECK(esp_wifi_set_country(WIFI_COUNTRY_EU));
   ESP_ERROR_CHECK(esp_wifi_start());
-  BarDebug_info("AD Free Heap at %d = %d\n", __LINE__, OsGetFreeHeapSize());
+  BarDebug_info("Free Heap at %d = %d\n", __LINE__, OsGetFreeHeapSize());
 }
 
 /******************************************************************************

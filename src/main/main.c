@@ -26,7 +26,7 @@ void app_main(void)
   BAR_ERROR_CHECK(Gpio_configure(DETECTION_AXE_Y, BAR_GPIO_MODE_INPUT, BAR_GPIO_PULL_NONE));
 
   Initialize_init();
-  BarDebug_info("AB Free Heap at %d = %d\n", __LINE__, OsGetFreeHeapSize());
+  BarDebug_info("Free Heap at %d = %d\n", __LINE__, OsGetFreeHeapSize());
   System_init();
 
 //  BAR_ERROR_CHECK(Gpio_configure(BUTTON_GPIO_MODE, BAR_GPIO_MODE_INPUT, BAR_GPIO_PULL_NONE));

@@ -315,7 +315,7 @@ void Esp32_init(void)
 
   ESP_ERROR_CHECK(tcpip_adapter_set_ip_info(TCPIP_ADAPTER_IF_STA, &info));
 
-  BarDebug_info("AC Free Heap at %d = %d\n", __LINE__, OsGetFreeHeapSize());
+  BarDebug_info("Free Heap at %d = %d\n", __LINE__, OsGetFreeHeapSize());
   ESP_ERROR_CHECK(esp_event_loop_init(Esp32_eventHandler, NULL));
 }
 
