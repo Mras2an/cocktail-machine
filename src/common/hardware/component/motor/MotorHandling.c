@@ -67,7 +67,7 @@ void MotorHandling_setPositionOnX(int position)
     CpuDelay_ms(1);
     BAR_ERROR_CHECK(Gpio_set(MOTOR_AXE_X_CLK, BAR_LEVEL_HIGH));
     CpuDelay_ms(1);
-//    if (position != 1)
+//    if (position < 0)
 //    {
 //    	Gpio_get(DETECTION_AXE_X, bp1);
 //    	if (!bp1[0]) {

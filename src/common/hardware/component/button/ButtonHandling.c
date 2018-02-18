@@ -2,6 +2,7 @@
 #include "System.h"
 #include "Board.h"
 #include "Utils.h"
+#include "SmartConfig.h"
 
 static OsQueueHandle_t tsQueueForButton = NULL;
 
@@ -43,7 +44,8 @@ void ButtonHandling_executeTask(eButtonMode_t eEvent)
 //  /* 3 sec = 6 * 500ms */
 //  if ((time * 500) < 3000)
 //  {
-//
+//    //remove wi-i ssid and passwd
+//    SmartConfig_factoryReset();
 //  }
 //}
 
