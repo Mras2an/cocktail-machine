@@ -153,9 +153,9 @@ static void Esp32SmartConfig_callback(smartconfig_status_t status, void * pdata)
         {
           BarDebug_err("Stop timer");
         }
+
         // save if you have error: "smartconfig: send failed, errno 118"
         Wifi_saveSSIDAndPass(this->ssid, this->pass);
-
         ESP_ERROR_CHECK(esp_wifi_disconnect());
         ESP_ERROR_CHECK(esp_wifi_set_config(ESP_IF_WIFI_STA, wifi_config));
         ESP_ERROR_CHECK(esp_wifi_connect());

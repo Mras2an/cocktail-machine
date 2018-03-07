@@ -43,11 +43,12 @@ static sEsp32Ota_t sEsp32Ota;
 #define this (&sEsp32Ota)
 
 
-typedef enum {
-    NWR_READ_COMPLETE = 0,
-    NWR_READ_TIMEOUT = 1,
-    NWR_DISCONNECTED = 2,
-    NWR_ERROR = 3,
+typedef enum
+{
+  NWR_READ_COMPLETE = 0,
+  NWR_READ_TIMEOUT = 1,
+  NWR_DISCONNECTED = 2,
+  NWR_ERROR = 3,
 } TNetworkResult;
 
 #define TAG "network"
@@ -317,10 +318,9 @@ int Esp32Ota_getAddrBootPartition(char * part)
  *******************************************************************************/
 void Esp32Ota_InitTask()
 {
-    BarDebug_info("InitTask \n");
-
-    sEventGroup = xEventGroupCreate();
-    xTaskCreate(&Esp32Ota_networkTask, "networkTask", 32768, NULL, 5, NULL);
+  BarDebug_info("InitTask \n");
+  sEventGroup = xEventGroupCreate();
+  xTaskCreate(&Esp32Ota_networkTask, "networkTask", 32768, NULL, 5, NULL);
 }
 
 /******************************************************************************
@@ -333,45 +333,55 @@ void Esp32Ota_InitTask()
  *******************************************************************************/
 static int Esp32Ota_networkReceive(int s, char *buf, int maxLen, int *actualLen)
 {
-    int totalLen = 0;
+  int totalLen = 0;
 
-    for (int timeoutCtr = 0; timeoutCtr < 3000; timeoutCtr++) {
+  for(int timeoutCtr = 0; timeoutCtr < 3000; timeoutCtr++)
+  {
+    int readAgain = 0;
 
-        int readAgain = 0;
-        do {
-            buf[totalLen] = 0x00;
-            int n = recv(s, &buf[totalLen], maxLen - totalLen, MSG_DONTWAIT);
-            int e = errno;
+    do
+    {
+      buf[totalLen] = 0x00;
+      int n = recv(s, &buf[totalLen], maxLen - totalLen, MSG_DONTWAIT);
+      int e = errno;
 
-            if (n > 0) {
-                totalLen += n;
-                if (totalLen > 0) {
-                    int recordLen = 0;
-                    int recordWithLengthIndicator = (1 == sscanf(buf, "!%04x", &recordLen));
-                    BarDebug_info("networkReceive: recordWithLengthIndicator = %d, expected length = %d, current length = %d\n", recordWithLengthIndicator, recordLen, totalLen);
-                    if ((recordWithLengthIndicator && totalLen == recordLen)
-                        || (!recordWithLengthIndicator && buf[totalLen - 1] == '\n'))
-                    {
-                        BarDebug_info("networkReceive: received %d byte packet on socket %d\n", totalLen, s);
-                        *actualLen = totalLen;
-                        return NWR_READ_COMPLETE;
-                    }
-                }
-                readAgain = 1;
+      if(n > 0)
+      {
+        totalLen += n;
 
-            } else if (n < 0 && e == EAGAIN) {
-                readAgain = 0;
+        if(totalLen > 0)
+        {
+          int recordLen = 0;
+          int recordWithLengthIndicator = (1 == sscanf(buf, "!%04x", &recordLen));
+          BarDebug_info("networkReceive: recordWithLengthIndicator = %d, expected length = %d, current length = %d\n", recordWithLengthIndicator, recordLen, totalLen);
 
-            } else {
-                BarDebug_err("recv n = %d, errno = %d (%s)\n", n, e, strerror(e));
-                return NWR_ERROR;
-            }
+          if((recordWithLengthIndicator && totalLen == recordLen)
+             || (!recordWithLengthIndicator && buf[totalLen - 1] == '\n'))
+          {
+            BarDebug_info("networkReceive: received %d byte packet on socket %d\n", totalLen, s);
+            *actualLen = totalLen;
+            return NWR_READ_COMPLETE;
+          }
+        }
 
-        } while (readAgain);
-        vTaskDelay(10 / portTICK_RATE_MS);
+        readAgain = 1;
+      }
+      else if(n < 0 && e == EAGAIN)
+      {
+        readAgain = 0;
+      }
+      else
+      {
+        BarDebug_err("recv n = %d, errno = %d (%s)\n", n, e, strerror(e));
+        return NWR_ERROR;
+      }
     }
+    while(readAgain);
 
-    return NWR_READ_TIMEOUT;
+    vTaskDelay(10 / portTICK_RATE_MS);
+  }
+
+  return NWR_READ_TIMEOUT;
 }
 
 /******************************************************************************
@@ -381,125 +391,143 @@ static int Esp32Ota_networkReceive(int s, char *buf, int maxLen, int *actualLen)
  *******************************************************************************/
 static void Esp32Ota_networkTask(void *pvParameters)
 {
-    const int maxRequestLen = 10000;
-    const int maxResponseLen = 1000;
-    const int tcpPort = 80;
+  const int maxRequestLen = 10000;
+  const int maxResponseLen = 1000;
+  const int tcpPort = 80;
+  BarDebug_info("OTA Task\n");
 
-    BarDebug_info("OTA Task\n");
+  while(1)
+  {
+    int s = socket(AF_INET, SOCK_STREAM, 0);
 
-    while (1) {
-        int s = socket(AF_INET, SOCK_STREAM, 0);
-        if (s < 0) {
-            BarDebug_err("networkTask: failed to create socket: %d (%s)\n", errno, strerror(errno));
-            vTaskDelay(1000 / portTICK_RATE_MS);
-            continue;
+    if(s < 0)
+    {
+      BarDebug_err("networkTask: failed to create socket: %d (%s)\n", errno, strerror(errno));
+      vTaskDelay(1000 / portTICK_RATE_MS);
+      continue;
+    }
+
+    struct sockaddr_in serverAddr;
+
+    memset(&serverAddr, 0, sizeof(struct sockaddr_in));
+
+    serverAddr.sin_len = sizeof(struct sockaddr_in);
+
+    serverAddr.sin_family = AF_INET;
+
+    serverAddr.sin_port = htons(tcpPort);
+
+    serverAddr.sin_addr.s_addr = INADDR_ANY;
+
+    int b = bind(s, (struct sockaddr *)&serverAddr, sizeof(struct sockaddr_in));
+
+    if(b < 0)
+    {
+      BarDebug_err("networkTask: failed to bind socket %d: %d (%s)\n", s, errno, strerror(errno));
+      vTaskDelay(1000 / portTICK_RATE_MS);
+      continue;
+    }
+
+    BarDebug_info("networkTask: 'listen' on socket %d\n", s);
+    listen(s, 1);
+
+    while(1)
+    {
+      BarDebug_info("--------------------\n");
+      BarDebug_info("networkTask: 'accept' on socket %d\n", s);
+      struct sockaddr_in clientAddr;
+      socklen_t clen = sizeof(clientAddr);
+      int s2 = accept(s, (struct sockaddr *)&clientAddr, &clen);
+
+      if(s2 < 0)
+      {
+        BarDebug_err("networkTask: 'accept' failed: %d (%s)\n", errno, strerror(errno));
+        vTaskDelay(1000 / portTICK_RATE_MS);
+        break;
+      }
+
+      do
+      {
+        char *requestBuf = malloc(maxRequestLen * sizeof(char));
+
+        if(!requestBuf)
+        {
+          BarDebug_err("networkTask: malloc for requestBuf failed: %d (%s)\n", errno, strerror(errno));
+          break;
         }
 
-        struct sockaddr_in serverAddr;
-        memset(&serverAddr, 0, sizeof (struct sockaddr_in));
-        serverAddr.sin_len = sizeof(struct sockaddr_in);
-        serverAddr.sin_family = AF_INET;
-        serverAddr.sin_port = htons(tcpPort);
-        serverAddr.sin_addr.s_addr = INADDR_ANY;
+        bzero(requestBuf, maxRequestLen);
+        int totalRequestLen = 0;
+        TNetworkResult result = Esp32Ota_networkReceive(s2, requestBuf, maxRequestLen, &totalRequestLen);
 
-        int b = bind(s, (struct sockaddr *)&serverAddr, sizeof(struct sockaddr_in));
-        if (b < 0) {
-            BarDebug_err("networkTask: failed to bind socket %d: %d (%s)\n", s, errno, strerror(errno));
-            vTaskDelay(1000 / portTICK_RATE_MS);
-            continue;
+        if(result != NWR_READ_COMPLETE)
+        {
+          BarDebug_info("nothing more to, closing socket %d\n", s2);
+          free(requestBuf);
+          close(s2);
+          break;
         }
 
-        BarDebug_info("networkTask: 'listen' on socket %d\n", s);
-        listen(s, 1);
-        while (1) {
+        BarDebug_info("networkTask: received %d bytes: %02x %02x %02x %02x ... | %c%c%c%c...\n",
+                      totalRequestLen,
+                      requestBuf[0], requestBuf[1], requestBuf[2], requestBuf[3],
+                      NORM_C(requestBuf[0]), NORM_C(requestBuf[1]), NORM_C(requestBuf[2]), NORM_C(requestBuf[3]));
+        char *responseBuf = malloc(maxResponseLen * sizeof(char));
+        Esp32Ota_processMessage(requestBuf, totalRequestLen, responseBuf, maxResponseLen);
+        free(requestBuf);
+        int totalLen = strlen(responseBuf);
+        int nofWritten = 0;
+        BarDebug_info("networkTask: write %d bytes to socket %d: %02x %02x %02x %02x ... | %c%c%c%c...\n", totalLen, s2,
+                      responseBuf[0], responseBuf[1], responseBuf[2], responseBuf[3],
+                      NORM_C(responseBuf[0]), NORM_C(responseBuf[1]), NORM_C(responseBuf[2]), NORM_C(responseBuf[3]));
 
-            BarDebug_info("--------------------\n");
-            BarDebug_info("networkTask: 'accept' on socket %d\n", s);
-            struct sockaddr_in clientAddr;
-            socklen_t clen = sizeof(clientAddr);
-            int s2 = accept(s, (struct sockaddr *)&clientAddr, &clen);
-            if (s2 < 0) {
-                BarDebug_err("networkTask: 'accept' failed: %d (%s)\n", errno, strerror(errno));
-                vTaskDelay(1000 / portTICK_RATE_MS);
-                break;
+        do
+        {
+          int n = write(s2, &responseBuf[nofWritten], totalLen - nofWritten);
+          int e = errno;
+
+          if(n > 0)
+          {
+            nofWritten += n;
+
+            if(totalLen - nofWritten == 0)
+            {
+              break;
+            }
+          }
+          else if(n == 0)
+          {
+            // Disconnected?
+            break;
+          }
+          else
+          {
+            if(e == EAGAIN)
+            {
+              continue;
             }
 
-            do {
-
-                char *requestBuf = malloc(maxRequestLen * sizeof(char));
-                if (!requestBuf) {
-                    BarDebug_err("networkTask: malloc for requestBuf failed: %d (%s)\n", errno, strerror(errno));
-                    break;
-                }
-                bzero(requestBuf, maxRequestLen);
-
-                int totalRequestLen = 0;
-                TNetworkResult result = Esp32Ota_networkReceive(s2, requestBuf, maxRequestLen, &totalRequestLen);
-
-                if (result != NWR_READ_COMPLETE) {
-                    BarDebug_info("nothing more to, closing socket %d\n", s2);
-                    free(requestBuf);
-                    close(s2);
-                    break;
-                }
-
-                BarDebug_info("networkTask: received %d bytes: %02x %02x %02x %02x ... | %c%c%c%c...\n",
-                         totalRequestLen,
-                         requestBuf[0], requestBuf[1], requestBuf[2], requestBuf[3],
-                         NORM_C(requestBuf[0]), NORM_C(requestBuf[1]), NORM_C(requestBuf[2]), NORM_C(requestBuf[3]));
-
-
-                char *responseBuf = malloc(maxResponseLen * sizeof(char));
-                Esp32Ota_processMessage(requestBuf, totalRequestLen, responseBuf, maxResponseLen);
-
-                free(requestBuf);
-
-                int totalLen = strlen(responseBuf);
-                int nofWritten = 0;
-                BarDebug_info("networkTask: write %d bytes to socket %d: %02x %02x %02x %02x ... | %c%c%c%c...\n", totalLen, s2,
-                         responseBuf[0], responseBuf[1], responseBuf[2], responseBuf[3],
-                         NORM_C(responseBuf[0]), NORM_C(responseBuf[1]), NORM_C(responseBuf[2]), NORM_C(responseBuf[3]));
-
-                do {
-                    int n = write(s2, &responseBuf[nofWritten], totalLen - nofWritten);
-                    int e = errno;
-
-                    if (n > 0) {
-                        nofWritten += n;
-
-                        if (totalLen - nofWritten == 0) {
-                            break;
-                        }
-
-                    } else if (n == 0) {
-                        // Disconnected?
-                        break;
-
-                    } else {
-                        if (e == EAGAIN) {
-                            continue;
-                        }
-                        BarDebug_err("networkTask: write failed: %d (%s)\n", errno, strerror(errno));
-                        break;
-                    }
-
-                } while (1);
-
-                free(responseBuf);
-
-
-                if (sRebootAfterReply) {
-                    BarDebug_info("networkTask: Reboot in 2 seconds...\n");
-                    vTaskDelay(2000 / portTICK_RATE_MS);
-                    esp_restart();
-                }
-
-            } while (1);
+            BarDebug_err("networkTask: write failed: %d (%s)\n", errno, strerror(errno));
+            break;
+          }
         }
+        while(1);
 
-        close(s);
-        vTaskDelay(2000 / portTICK_RATE_MS);
+        free(responseBuf);
+
+        if(sRebootAfterReply)
+        {
+          BarDebug_info("networkTask: Reboot in 2 seconds...\n");
+          vTaskDelay(2000 / portTICK_RATE_MS);
+          esp_restart();
+        }
+      }
+      while(1);
     }
+
+    close(s);
+    vTaskDelay(2000 / portTICK_RATE_MS);
+  }
 }
 
 /******************************************************************************
@@ -512,36 +540,43 @@ static void Esp32Ota_networkTask(void *pvParameters)
  *******************************************************************************/
 static void Esp32Ota_processMessage(const char *message, int messageLen, char *responseBuf, int responseBufLen)
 {
-    char response[256];
-    sprintf(response, "OK\r\n");
+  char response[256];
+  sprintf(response, "OK\r\n");
 
-    if (message[0] == '!') {
-        TOtaResult result = OTA_OK;
+  if(message[0] == '!')
+  {
+    TOtaResult result = OTA_OK;
 
-        if (message[1] == '[') {
-            BarDebug_info("processMessage: OTA start\n");
-            BarDebug_info("GREEN LED FAST BLINKING\n");
-            LedRGBHandling_ExecuteLedTaskFromISR(GREEN_LED_FAST_BLINKING);
-            result = Esp32Ota_begin();
-
-        } else if (message[1] == ']') {
-            BarDebug_info("processMessage: OTA end\n");
-            result = Esp32Ota_end();
-
-        } else if (message[1] == '*') {
-            BarDebug_info("processMessage: Reboot\n");
-            sRebootAfterReply = 1;
-
-        } else {
-            result = Esp32Ota_writeHexData(&message[5], messageLen - 5);
-        }
-
-        if (result != OTA_OK) {
-            BarDebug_err("processMessage: OTA_ERROR %d\n", result);
-            sprintf(response, "OTA_ERROR %d\r\n\n", result);
-        }
+    if(message[1] == '[')
+    {
+      BarDebug_info("processMessage: OTA start\n");
+      BarDebug_info("GREEN LED FAST BLINKING\n");
+      LedRGBHandling_ExecuteLedTaskFromISR(GREEN_LED_FAST_BLINKING);
+      result = Esp32Ota_begin();
     }
-    strncpy(responseBuf, response, responseBufLen);
+    else if(message[1] == ']')
+    {
+      BarDebug_info("processMessage: OTA end\n");
+      result = Esp32Ota_end();
+    }
+    else if(message[1] == '*')
+    {
+      BarDebug_info("processMessage: Reboot\n");
+      sRebootAfterReply = 1;
+    }
+    else
+    {
+      result = Esp32Ota_writeHexData(&message[5], messageLen - 5);
+    }
+
+    if(result != OTA_OK)
+    {
+      BarDebug_err("processMessage: OTA_ERROR %d\n", result);
+      sprintf(response, "OTA_ERROR %d\r\n\n", result);
+    }
+  }
+
+  strncpy(responseBuf, response, responseBufLen);
 }
 
 #endif // ESP32

@@ -19,11 +19,11 @@ COMMON_SRC_DIR := common/debug \
                   common/hardware/component/button \
                   common/hardware/component/motor
 
-ALL_SRC_DIR := main  app app/cocktail app/html $(COMMON_SRC_DIR)
+ALL_SRC_DIR := main  app app/cocktail app/html app/iftttAndVoiceAssistant $(COMMON_SRC_DIR)
 
 COMPONENT_ADD_INCLUDEDIRS := $(ALL_SRC_DIR)
 
 COMPONENT_SRCDIRS := $(ALL_SRC_DIR)
 
-CFLAGS += -DESP32 -DFREERTOS_V9 -DESP32_4MB -DSMART_CONFIG
+CFLAGS += -DESP32 -DFREERTOS_V9 -DESP32_4MB -DSMART_CONFIG -DENABLE_IFTTT_AND_VOICEASSISTANT
 

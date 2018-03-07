@@ -13,6 +13,7 @@
 #include "FileSystem.h"
 #include "Ota.h"
 #include "mdns.h"
+#include "IftttAndVoiceAssistant.h"
 
 #ifdef SMART_CONFIG
   #include "SmartConfig.h"
@@ -120,34 +121,38 @@ static esp_err_t Esp32_eventHandler(void *ctx, system_event_t *event)
       Esp32_saveMask((const char *)ip4addr_ntoa(&event->event_info.got_ip.ip_info.netmask));
       Esp32_saveGw((const char *)ip4addr_ntoa(&event->event_info.got_ip.ip_info.gw));
       Esp32_getMac();
-
       char * update = Fs_read("Update", "Update");
-      if (update != NULL)
+
+      if(update != NULL)
       {
-          BarDebug_info("LED GREEN\n");
-          LedRGBHandling_ExecuteLedTaskFromISR(GREEN_LED);
-    	  Fs_delete("Update", "Update");
-    	  OsFree(update);
-    	  Ota_InitTask();
+        BarDebug_info("LED GREEN\n");
+        LedRGBHandling_ExecuteLedTaskFromISR(GREEN_LED);
+        Fs_delete("Update", "Update");
+        OsFree(update);
+        Ota_InitTask();
       }
       else
       {
-          BarDebug_info("LED BLUE\n");
-          LedRGBHandling_ExecuteLedTaskFromISR(BLUE_LED);
-          Cocktail_init();
-          QueueCocktail_init();
+        BarDebug_info("LED BLUE\n");
+        LedRGBHandling_ExecuteLedTaskFromISR(BLUE_LED);
+        Cocktail_init();
+        QueueCocktail_init();
+        #ifdef ENABLE_IFTTT_AND_VOICEASSISTANT
+        IftttAndVoiceAssistant_init();
+        #endif
       }
 
       mdns_server_t * mdns = NULL;
       mdns_init(TCPIP_ADAPTER_IF_STA, &mdns);
-      ESP_ERROR_CHECK( mdns_set_hostname(mdns, "mybar") );
-      ESP_ERROR_CHECK( mdns_set_instance(mdns, "mybar") );
-      ESP_ERROR_CHECK( mdns_service_add(mdns, "_http", "_tcp", 80) );
-      ESP_ERROR_CHECK( mdns_service_instance_set(mdns, "_http", "_tcp", "mybar") );
+      ESP_ERROR_CHECK(mdns_set_hostname(mdns, "mybar"));
+      ESP_ERROR_CHECK(mdns_set_instance(mdns, "mybar"));
+      ESP_ERROR_CHECK(mdns_service_add(mdns, "_http", "_tcp", 80));
+      ESP_ERROR_CHECK(mdns_service_instance_set(mdns, "_http", "_tcp", "mybar"));
 
       if(!SmartConfig_isSmartconfigEnable())
       {
-    	  BarDebug_info("stop smartconfig timer\n");
+        BarDebug_info("stop smartconfig timer\n");
+
         if(OsTimerStop(esp32Timer, 0) != pdPASS)
         {
           BarDebug_err("Stop timer\n");

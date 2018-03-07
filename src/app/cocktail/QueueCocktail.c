@@ -97,16 +97,21 @@ static void QueueCocktail_receivedTask(void* pvParameters)
         {
           BarDebug_info("Pump number:%c\n", bottleList.note[i]);
           MotorHandling_setInitialPosition();
+
           if(bottleList.note[i] == '1')
           {
             MotorHandling_getAMeasureOnPump(bottleList.measure[i], MOTOR_PUMP_3);
-          }else if(bottleList.note[i] == '2')
+          }
+          else if(bottleList.note[i] == '2')
           {
             MotorHandling_getAMeasureOnPump(bottleList.measure[i], MOTOR_PUMP_2);
-          }else if(bottleList.note[i] == '3')
+          }
+          else if(bottleList.note[i] == '3')
           {
             MotorHandling_getAMeasureOnPump(bottleList.measure[i], MOTOR_PUMP_1);
-          }else {
+          }
+          else
+          {
             BarDebug_err("Pump found\n");
           }
         }

@@ -60,21 +60,21 @@ void MotorHandling_setPositionOnX(int position)
     end = (position * (-1)) * MOTOR_OFFSET;
   }
 
-//  uint32_t bp1[1];
+  //  uint32_t bp1[1];
   for(int i = 0; i < end; i++)
   {
     BAR_ERROR_CHECK(Gpio_set(MOTOR_AXE_X_CLK, BAR_LEVEL_LOW));
     CpuDelay_ms(1);
     BAR_ERROR_CHECK(Gpio_set(MOTOR_AXE_X_CLK, BAR_LEVEL_HIGH));
     CpuDelay_ms(1);
-//    if (position < 0)
-//    {
-//    	Gpio_get(DETECTION_AXE_X, bp1);
-//    	if (!bp1[0]) {
-//          BarDebug_info("Stop motor.\n");
-//    		break;
-//      }
-//    }
+    //    if (position < 0)
+    //    {
+    //      Gpio_get(DETECTION_AXE_X, bp1);
+    //      if (!bp1[0]) {
+    //          BarDebug_info("Stop motor.\n");
+    //        break;
+    //      }
+    //    }
   }
 }
 
@@ -111,6 +111,7 @@ static void MotorHandling_get10ml()
     CpuDelay_ms(1);
     end--;
   }
+
   CpuDelay_ms(800);
 }
 
@@ -188,7 +189,6 @@ void MotorHandling_getAMeasureOnY(int measure)
     MotorHandling_get25ml();
     MotorHandling_get10ml();
   }
-
 }
 
 /******************************************************************************
@@ -201,7 +201,6 @@ void MotorHandling_getAMeasureOnPump(int measure, int pump)
 {
   BarDebug_info("\t\t MotorHandling_getAMeasureOnPump \n");
   BAR_ERROR_CHECK(Gpio_set(pump, BAR_LEVEL_HIGH));
-
   CpuDelay_ms(500);
 
   for(int j = 0; j < measure; j++)

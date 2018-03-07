@@ -14,7 +14,7 @@ char bb[] =
   "{\"bottle\":{\"name\":\"curacao bleu\",\"note\":\"20%/vol\",\"position\":5}},"
   "{\"bottle\":{\"name\":\"cointreau\",\"note\":\"25%/vol\",\"position\":6}},"
   "{\"bottle\":{\"name\":\"get 27\",\"note\":\"50%/vol\",\"position\":7}}]}";
-  //"{\"bottle\":{\"name\":\"rhum blanc\",\"note\":\"50%/vol\",\"position\":7}}]}";
+//"{\"bottle\":{\"name\":\"rhum blanc\",\"note\":\"50%/vol\",\"position\":7}}]}";
 
 char cc[] =
   "{\"cocktails\":[{\"cocktail\":{\"name\":\"Mojito\",\"ingredients\":[{\"ingredient\":{\"name\":\"rhum blanc\",\"measure\":2}},{\"ingredient\":{\"name\":\"menthe verte\",\"measure\":1}},{\"ingredient\":{\"name\":\"jus de citron\",\"measure\":1}},{\"ingredient\":{\"name\":\"sucre de canne\",\"measure\":1}},{\"ingredient\":{\"name\":\"eau gazeuse\",\"measure\":2}},{\"ingredient\":{\"name\":\"glace pilee\",\"measure\":1}}]}},"

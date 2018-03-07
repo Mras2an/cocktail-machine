@@ -282,14 +282,14 @@ static void http_server_netconn_serve(struct netconn *conn)
 
       if(strncmp(&buf[5], "Update", strlen("Update")) == 0)
       {
-    	  if(Fs_write("Update", "Update", "Update") != ESP_OK)
-    	  {
-    	    BarDebug_err("Error to update\n");
-    	  }
-    	  else
-    	  {
-    		  System_cpuReset();
-    	  }
+        if(Fs_write("Update", "Update", "Update") != ESP_OK)
+        {
+          BarDebug_err("Error to update\n");
+        }
+        else
+        {
+          System_cpuReset();
+        }
       }
 
       if(strncmp(&buf[5], "AxeX+1", strlen("AxeX+1")) == 0)
@@ -305,7 +305,6 @@ static void http_server_netconn_serve(struct netconn *conn)
         MotorHandling_getAMeasureOnPump(2, MOTOR_PUMP_2);
         MotorHandling_getAMeasureOnPump(2, MOTOR_PUMP_1);
       }
-
     }
   }
 
@@ -362,11 +361,9 @@ void Html_init(void)
   memset(data, '\0', strlen(info) + 4);
   sprintf(data, info, (OsGetFreeHeapSize()/1024));
   strcat(http_index_hml, data);
-
   html_addButtonCss(http_index_hml, "Update", "Update");
   html_addButtonCss(http_index_hml, "AxeX+1", "AxeX+1");
   html_addButtonCss(http_index_hml, "Pump+2", "Pump+2");
-
   html_indexEnd(http_index_hml);
   xTaskCreate(&http_server, "http_server", 9216, NULL, 5, NULL);
 }
