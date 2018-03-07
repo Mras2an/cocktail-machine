@@ -6,7 +6,7 @@ You have full documentation into the doc repertory.
 
 ## DEMO :
 
-<a href="https://youtu.be/C-QNyAYlRnY" target="_blank"><img src="https://cdn.xingosoftware.com/elektor/images/fetch/https://www.elektormagazine.com/assets/upload/img/public/original/project.png" 
+<a href="https://www.youtube.com/watch?v=Tx3ExhTUp6A" target="_blank"><img src="https://cdn.xingosoftware.com/elektor/images/fetch/https://www.elektormagazine.com/assets/upload/img/public/original/b2.jpg" 
 alt="WebcamIP" width="420" height="315" border="5" /></a>
 
 This software is provided as is and it comes with no warranties
