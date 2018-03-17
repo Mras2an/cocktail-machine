@@ -1,6 +1,9 @@
 # cocktail-machine
 
-The goal is to be able to order a cocktail via a phone or PC. The cocktail machine with espressif WROOM32 exposes a web page accessible via an IP on the home internet network.
+The goal is to be able to:
+- Order a cocktail via a phone or PC
+- Order a cocktail via a voice assistant (Google home, Alexa, ...).
+- Order a cocktail via a IFTTT trigger
 
 You have full documentation into the doc repertory.
 
