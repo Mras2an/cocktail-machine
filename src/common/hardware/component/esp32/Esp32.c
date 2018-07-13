@@ -16,7 +16,7 @@
 #include "IftttAndVoiceAssistant.h"
 
 #ifdef SMART_CONFIG
-  #include "SmartConfig.h"
+    #include "SmartConfig.h"
 #endif
 
 OsTimerHandle_t esp32Timer;
@@ -28,18 +28,17 @@ static void Esp32_Callback(OsTimerHandle_t esp32Timer);
 
 static void Esp32_Callback(OsTimerHandle_t esp32Timer)
 {
-  System_cpuReset();
+    System_cpuReset();
 }
 
-typedef struct sEsp32
-{
-  char * ip;
-  char * mask;
-  char * gw;
-  char * mac;
-  char * uniqueId;
-  char * md5Read;
-  char * md5Cal;
+typedef struct sEsp32 {
+    char * ip;
+    char * mask;
+    char * gw;
+    char * mac;
+    char * uniqueId;
+    char * md5Read;
+    char * md5Cal;
 } sEsp32_t;
 
 static sEsp32_t sEsp32;
@@ -52,118 +51,101 @@ static sEsp32_t sEsp32;
  *******************************************************************************/
 static esp_err_t Esp32_eventHandler(void *ctx, system_event_t *event)
 {
-  switch(event->event_id)
-  {
-    case SYSTEM_EVENT_STA_START:
-    {
-      BarDebug_info("started\n");
-      #ifdef SMART_CONFIG
-      SmartConfig_createTask();
-      #endif
-      esp_wifi_connect();
+    switch(event->event_id) {
+        case SYSTEM_EVENT_STA_START: {
+            BarDebug_info("started\n");
+            #ifdef SMART_CONFIG
+            SmartConfig_createTask();
+            #endif
+            esp_wifi_connect();
 
-      if(!SmartConfig_isSmartconfigEnable())
-      {
-        esp32Timer = OsTimerCreate("Timer", WIFI_PERIOD, pdTRUE, 0, Esp32_Callback);
+            if(!SmartConfig_isSmartconfigEnable()) {
+                esp32Timer = OsTimerCreate("Timer", WIFI_PERIOD, pdTRUE, 0, Esp32_Callback);
 
-        if(esp32Timer == NULL)
-        {
-          BarDebug_err("Create timer\n");
+                if(esp32Timer == NULL) {
+                    BarDebug_err("Create timer\n");
+                }
+
+                if(OsTimerReset(esp32Timer, 0) != pdPASS) {
+                    BarDebug_err("Reset timer\n");
+                }
+
+                uint32_t bp1[1];
+                Gpio_get(BUTTON_GPIO_MODE, bp1);
+
+                if(bp1[0] == 0) {
+                    if(OsTimerStop(esp32Timer, 0) != pdPASS) {
+                        BarDebug_err("Stop timer\n");
+                    }
+                }
+            }
         }
+        break;
 
-        if(OsTimerReset(esp32Timer, 0) != pdPASS)
-        {
-          BarDebug_err("Reset timer\n");
+        case SYSTEM_EVENT_STA_DISCONNECTED: {
+            BarDebug_info("disconnected\n");
+            #ifdef SMART_CONFIG
+            SmartConfig_groupClearBits();
+            #endif
         }
+        break;
 
-        uint32_t bp1[1];
-        Gpio_get(BUTTON_GPIO_MODE, bp1);
-
-        if(bp1[0] == 0)
-        {
-          if(OsTimerStop(esp32Timer, 0) != pdPASS)
-          {
-            BarDebug_err("Stop timer\n");
-          }
+        case SYSTEM_EVENT_SCAN_DONE: {
+            BarDebug_info("Scan done\n");
         }
-      }
-    }
-    break;
+        break;
 
-    case SYSTEM_EVENT_STA_DISCONNECTED:
-    {
-      BarDebug_info("disconnected\n");
-      #ifdef SMART_CONFIG
-      SmartConfig_groupClearBits();
-      #endif
-    }
-    break;
-
-    case SYSTEM_EVENT_SCAN_DONE:
-    {
-      BarDebug_info("Scan done\n");
-    }
-    break;
-
-    case SYSTEM_EVENT_STA_CONNECTED:
-    {
-      BarDebug_info("connected\n");
-    }
-    break;
-
-    case SYSTEM_EVENT_STA_GOT_IP:
-    {
-      #ifdef SMART_CONFIG
-      SmartConfig_groupSetBits();
-      #endif
-      BarDebug_info("dhcp => event_handler:SYSTEM_EVENT_STA_GOT_IP!\n");
-      Esp32_saveIp((const char *)ip4addr_ntoa(&event->event_info.got_ip.ip_info.ip));
-      Esp32_saveMask((const char *)ip4addr_ntoa(&event->event_info.got_ip.ip_info.netmask));
-      Esp32_saveGw((const char *)ip4addr_ntoa(&event->event_info.got_ip.ip_info.gw));
-      Esp32_getMac();
-      char * update = Fs_read("Update", "Update");
-
-      if(update != NULL)
-      {
-        BarDebug_info("LED GREEN\n");
-        LedRGBHandling_ExecuteLedTaskFromISR(GREEN_LED);
-        Fs_delete("Update", "Update");
-        OsFree(update);
-        Ota_InitTask();
-      }
-      else
-      {
-        BarDebug_info("LED BLUE\n");
-        LedRGBHandling_ExecuteLedTaskFromISR(BLUE_LED);
-        Cocktail_init();
-        QueueCocktail_init();
-        #ifdef ENABLE_IFTTT_AND_VOICEASSISTANT
-        IftttAndVoiceAssistant_init();
-        #endif
-      }
-
-      mdns_server_t * mdns = NULL;
-      mdns_init(TCPIP_ADAPTER_IF_STA, &mdns);
-      ESP_ERROR_CHECK(mdns_set_hostname(mdns, "mybar"));
-      ESP_ERROR_CHECK(mdns_set_instance(mdns, "mybar"));
-      ESP_ERROR_CHECK(mdns_service_add(mdns, "_http", "_tcp", 80));
-      ESP_ERROR_CHECK(mdns_service_instance_set(mdns, "_http", "_tcp", "mybar"));
-
-      if(!SmartConfig_isSmartconfigEnable())
-      {
-        BarDebug_info("stop smartconfig timer\n");
-
-        if(OsTimerStop(esp32Timer, 0) != pdPASS)
-        {
-          BarDebug_err("Stop timer\n");
+        case SYSTEM_EVENT_STA_CONNECTED: {
+            BarDebug_info("connected\n");
         }
-      }
-    }
-    break;
+        break;
 
-    case SYSTEM_EVENT_AP_STACONNECTED:
-    {
-      BarDebug_info("station:"MACSTR" join,AID=%d\n", MAC2STR(event->event_info.sta_connected.mac), event->event_info.sta_connected.aid);
+        case SYSTEM_EVENT_STA_GOT_IP: {
+            #ifdef SMART_CONFIG
+            SmartConfig_groupSetBits();
+            #endif
+            BarDebug_info("dhcp => event_handler:SYSTEM_EVENT_STA_GOT_IP!\n");
+            Esp32_saveIp((const char *)ip4addr_ntoa(&event->event_info.got_ip.ip_info.ip));
+            Esp32_saveMask((const char *)ip4addr_ntoa(&event->event_info.got_ip.ip_info.netmask));
+            Esp32_saveGw((const char *)ip4addr_ntoa(&event->event_info.got_ip.ip_info.gw));
+            Esp32_getMac();
+            char * update = Fs_read("Update", "Update");
+
+            if(update != NULL) {
+                BarDebug_info("LED GREEN\n");
+                LedRGBHandling_ExecuteLedTaskFromISR(GREEN_LED);
+                Fs_delete("Update", "Update");
+                OsFree(update);
+                Ota_InitTask();
+            } else {
+                BarDebug_info("LED BLUE\n");
+                LedRGBHandling_ExecuteLedTaskFromISR(BLUE_LED);
+                Cocktail_init();
+                QueueCocktail_init();
+                #ifdef ENABLE_IFTTT_AND_VOICEASSISTANT
+                IftttAndVoiceAssistant_init();
+                #endif
+            }
+
+            mdns_server_t * mdns = NULL;
+            mdns_init(TCPIP_ADAPTER_IF_STA, &mdns);
+            ESP_ERROR_CHECK(mdns_set_hostname(mdns, "mybar"));
+            ESP_ERROR_CHECK(mdns_set_instance(mdns, "mybar"));
+            ESP_ERROR_CHECK(mdns_service_add(mdns, "_http", "_tcp", 80));
+            ESP_ERROR_CHECK(mdns_service_instance_set(mdns, "_http", "_tcp", "mybar"));
+
+            if(!SmartConfig_isSmartconfigEnable()) {
+                BarDebug_info("stop smartconfig timer\n");
+
+                if(OsTimerStop(esp32Timer, 0) != pdPASS) {
+                    BarDebug_err("Stop timer\n");
+                }
+            }
+        }
+        break;
+
+        case SYSTEM_EVENT_AP_STACONNECTED: {
+            BarDebug_info("station:"MACSTR" join,AID=%d\n", MAC2STR(event->event_info.sta_connected.mac), event->event_info.sta_connected.aid);
 }
 break;
 

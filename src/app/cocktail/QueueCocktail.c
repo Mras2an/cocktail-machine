@@ -6,20 +6,18 @@
 #include "LedRGBHandling.h"
 #include "Board.h"
 
-typedef struct sCtxQueueCocktail
-{
-  OsTaskHandle_t taskId;
-  OsQueueHandle_t xQueueCocktailEventQueue;
+typedef struct sCtxQueueCocktail {
+    OsTaskHandle_t taskId;
+    OsQueueHandle_t xQueueCocktailEventQueue;
 } sCtxQueueCocktail_t;
 
 static sCtxQueueCocktail_t ctx, *pCtx = &ctx;
 
-typedef struct
-{
-  int bottle[MAX_BOTTLE];
-  int position[MAX_BOTTLE];
-  int measure[MAX_BOTTLE];
-  char note[MAX_BOTTLE];
+typedef struct {
+    int bottle[MAX_BOTTLE];
+    int position[MAX_BOTTLE];
+    int measure[MAX_BOTTLE];
+    char note[MAX_BOTTLE];
 } sBottleList;
 sBottleList bottleList;
 
@@ -33,20 +31,18 @@ static void QueueCocktail_receivedTask(void* pvParameters);
  *******************************************************************************/
 int QueueCocktail_init(void)
 {
-  memset(pCtx, 0x00, sizeof(sCtxQueueCocktail_t));
-  pCtx->xQueueCocktailEventQueue = OsQueueCreate(5, sizeof(sCtxQueueCocktail_t));
+    memset(pCtx, 0x00, sizeof(sCtxQueueCocktail_t));
+    pCtx->xQueueCocktailEventQueue = OsQueueCreate(5, sizeof(sCtxQueueCocktail_t));
 
-  if(pCtx->xQueueCocktailEventQueue == NULL)
-  {
-    return 1;
-  }
+    if(pCtx->xQueueCocktailEventQueue == NULL) {
+        return 1;
+    }
 
-  if(OsTaskCreate(QueueCocktail_receivedTask, "queueReceivedTask", 4096, NULL, 4, &(pCtx->taskId)) != pdPASS)
-  {
-    return 1;
-  }
+    if(OsTaskCreate(QueueCocktail_receivedTask, "queueReceivedTask", 4096, NULL, 4, &(pCtx->taskId)) != pdPASS) {
+        return 1;
+    }
 
-  return 0;
+    return 0;
 }
 
 /*!*****************************************************************************
@@ -57,72 +53,59 @@ int QueueCocktail_init(void)
  *******************************************************************************/
 static void QueueCocktail_receivedTask(void* pvParameters)
 {
-  while(1)
-  {
-    int QueueCocktail;
-    /* Wait until there is something to do. */
-    OsQueueReceive(pCtx->xQueueCocktailEventQueue, &QueueCocktail, OsPortTimingPeriod);
-    LedRGBHandling_ExecuteLedTaskFromISR(BLUE_LED_FAST_BLINKING);
-    MotorHandling_setInitialPosition();
-    memset(bottleList.bottle, 255, MAX_BOTTLE);
-    memset(bottleList.position, 255, MAX_BOTTLE);
-    memset(bottleList.measure, 255, MAX_BOTTLE);
-    memset(bottleList.note, 255, MAX_BOTTLE);
-    int nbIngredients = Cocktail_getDispoIngredients(bottleList.bottle, bottleList.position, bottleList.measure, bottleList.note, QueueCocktail);
-    BarDebug_info("   nb ingredients: %i\n\n", nbIngredients);
-    int goToPosition = 0;
-    int currentPosition = 0;
+    while(1) {
+        int QueueCocktail;
+        /* Wait until there is something to do. */
+        OsQueueReceive(pCtx->xQueueCocktailEventQueue, &QueueCocktail, OsPortTimingPeriod);
+        LedRGBHandling_ExecuteLedTaskFromISR(BLUE_LED_FAST_BLINKING);
+        MotorHandling_setInitialPosition();
+        memset(bottleList.bottle, 255, MAX_BOTTLE);
+        memset(bottleList.position, 255, MAX_BOTTLE);
+        memset(bottleList.measure, 255, MAX_BOTTLE);
+        memset(bottleList.note, 255, MAX_BOTTLE);
+        int nbIngredients = Cocktail_getDispoIngredients(bottleList.bottle, bottleList.position, bottleList.measure, bottleList.note, QueueCocktail);
+        BarDebug_info("   nb ingredients: %i\n\n", nbIngredients);
+        int goToPosition = 0;
+        int currentPosition = 0;
 
-    for(int i = 0; i < nbIngredients; i++)
-    {
-      BarDebug_info("\t bottle: %i\n", bottleList.bottle[i]);
-      BarDebug_info("\t position: %i\n", bottleList.position[i]);
-      BarDebug_info("\t measure: %i\n\n", bottleList.measure[i]);
+        for(int i = 0; i < nbIngredients; i++) {
+            BarDebug_info("\t bottle: %i\n", bottleList.bottle[i]);
+            BarDebug_info("\t position: %i\n", bottleList.position[i]);
+            BarDebug_info("\t measure: %i\n\n", bottleList.measure[i]);
 
-      if(currentPosition != bottleList.position[i])
-      {
-        goToPosition = bottleList.position[i] - currentPosition;
-        MotorHandling_setPositionOnX(goToPosition);
-        currentPosition += goToPosition;
-        BarDebug_info("\t\t currentPosition %i, goToPosition %i\n",currentPosition ,goToPosition);
-        CpuDelay_ms(500);
-      }
+            if(currentPosition != bottleList.position[i]) {
+                goToPosition = bottleList.position[i] - currentPosition;
+                MotorHandling_setPositionOnX(goToPosition);
+                currentPosition += goToPosition;
+                BarDebug_info("\t\t currentPosition %i, goToPosition %i\n",currentPosition ,goToPosition);
+                CpuDelay_ms(500);
+            }
 
-      {
-        if(currentPosition != 0)
-        {
-          MotorHandling_getAMeasureOnY(bottleList.measure[i]);
+            {
+                if(currentPosition != 0) {
+                    MotorHandling_getAMeasureOnY(bottleList.measure[i]);
+                } else {
+                    BarDebug_info("Pump number:%c\n", bottleList.note[i]);
+                    MotorHandling_setInitialPosition();
+
+                    if(bottleList.note[i] == '1') {
+                        MotorHandling_getAMeasureOnPump(bottleList.measure[i], MOTOR_PUMP_3);
+                    } else if(bottleList.note[i] == '2') {
+                        MotorHandling_getAMeasureOnPump(bottleList.measure[i], MOTOR_PUMP_2);
+                    } else if(bottleList.note[i] == '3') {
+                        MotorHandling_getAMeasureOnPump(bottleList.measure[i], MOTOR_PUMP_1);
+                    } else {
+                        BarDebug_err("Pump found\n");
+                    }
+                }
+            }
         }
-        else
-        {
-          BarDebug_info("Pump number:%c\n", bottleList.note[i]);
-          MotorHandling_setInitialPosition();
 
-          if(bottleList.note[i] == '1')
-          {
-            MotorHandling_getAMeasureOnPump(bottleList.measure[i], MOTOR_PUMP_3);
-          }
-          else if(bottleList.note[i] == '2')
-          {
-            MotorHandling_getAMeasureOnPump(bottleList.measure[i], MOTOR_PUMP_2);
-          }
-          else if(bottleList.note[i] == '3')
-          {
-            MotorHandling_getAMeasureOnPump(bottleList.measure[i], MOTOR_PUMP_1);
-          }
-          else
-          {
-            BarDebug_err("Pump found\n");
-          }
-        }
-      }
+        MotorHandling_setInitialPosition();
+        LedRGBHandling_ExecuteLedTaskFromISR(BLUE_LED);
     }
 
-    MotorHandling_setInitialPosition();
-    LedRGBHandling_ExecuteLedTaskFromISR(BLUE_LED);
-  }
-
-  OsTaskDelete(NULL);
+    OsTaskDelete(NULL);
 }
 
 /*!*****************************************************************************
@@ -133,10 +116,9 @@ static void QueueCocktail_receivedTask(void* pvParameters)
  *******************************************************************************/
 int QueueCocktail_received(int newQueueCocktail)
 {
-  if(OsQueueSend(pCtx->xQueueCocktailEventQueue, &newQueueCocktail, 0) != pdPASS)
-  {
-    return 1;
-  }
+    if(OsQueueSend(pCtx->xQueueCocktailEventQueue, &newQueueCocktail, 0) != pdPASS) {
+        return 1;
+    }
 
-  return 0;
+    return 0;
 }

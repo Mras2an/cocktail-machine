@@ -10,7 +10,7 @@
 #include "MotorHandling.h"
 
 #ifdef SMART_CONFIG
-  #include "SmartConfig.h"
+    #include "SmartConfig.h"
 #endif
 
 /******************************************************************************
@@ -20,23 +20,23 @@
  *******************************************************************************/
 void app_main(void)
 {
-  /* gpio switch stop detection*/
-  BAR_ERROR_CHECK(Gpio_configure(DETECTION_AXE_X, BAR_GPIO_MODE_INPUT, BAR_GPIO_PULL_NONE));
-  /* gpio switch stop detection*/
-  BAR_ERROR_CHECK(Gpio_configure(DETECTION_AXE_Y, BAR_GPIO_MODE_INPUT, BAR_GPIO_PULL_NONE));
-  Initialize_init();
-  BarDebug_info("Free Heap at %d = %d\n", __LINE__, OsGetFreeHeapSize());
-  System_init();
-  //  BAR_ERROR_CHECK(Gpio_configure(BUTTON_GPIO_MODE, BAR_GPIO_MODE_INPUT, BAR_GPIO_PULL_NONE));
-  //  uint32_t bp[1];
-  //  Gpio_get(BUTTON_GPIO_MODE, bp);
-  //  if(bp[0] == 0)
-  //  {
-  //    SmartConfig_factoryReset();
-  //  }
-  #ifdef SMART_CONFIG
-  SmartConfig_init();
-  #endif
-  Wifi_init();
-  BarDebug_info("Free Heap at %d = %d\n", __LINE__, OsGetFreeHeapSize());
+    /* gpio switch stop detection*/
+    BAR_ERROR_CHECK(Gpio_configure(DETECTION_AXE_X, BAR_GPIO_MODE_INPUT, BAR_GPIO_PULL_NONE));
+    /* gpio switch stop detection*/
+    BAR_ERROR_CHECK(Gpio_configure(DETECTION_AXE_Y, BAR_GPIO_MODE_INPUT, BAR_GPIO_PULL_NONE));
+    Initialize_init();
+    BarDebug_info("Free Heap at %d = %d\n", __LINE__, OsGetFreeHeapSize());
+    System_init();
+    //  BAR_ERROR_CHECK(Gpio_configure(BUTTON_GPIO_MODE, BAR_GPIO_MODE_INPUT, BAR_GPIO_PULL_NONE));
+    //  uint32_t bp[1];
+    //  Gpio_get(BUTTON_GPIO_MODE, bp);
+    //  if(bp[0] == 0)
+    //  {
+    //    SmartConfig_factoryReset();
+    //  }
+    #ifdef SMART_CONFIG
+    SmartConfig_init();
+    #endif
+    Wifi_init();
+    BarDebug_info("Free Heap at %d = %d\n", __LINE__, OsGetFreeHeapSize());
 }

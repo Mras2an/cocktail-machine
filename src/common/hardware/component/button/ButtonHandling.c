@@ -17,11 +17,11 @@ static void ButtonHandling_task(void * pvParameters);
  *******************************************************************************/
 void ButtonHandling_init(void)
 {
-  if(tsQueueForButton == NULL)
-    tsQueueForButton = xQueueCreate(10, 1);
+    if(tsQueueForButton == NULL)
+        tsQueueForButton = xQueueCreate(10, 1);
 
-  if(tsQueueForButton != NULL)
-    xTaskCreate(ButtonHandling_task, "ButtonTask", 1500, NULL, 4, NULL);
+    if(tsQueueForButton != NULL)
+        xTaskCreate(ButtonHandling_task, "ButtonTask", 1500, NULL, 4, NULL);
 }
 
 /*!*****************************************************************************
@@ -31,7 +31,7 @@ void ButtonHandling_init(void)
  *******************************************************************************/
 void ButtonHandling_executeTask(eButtonMode_t eEvent)
 {
-  xQueueSend(tsQueueForButton, &eEvent, 0);
+    xQueueSend(tsQueueForButton, &eEvent, 0);
 }
 
 /*!*****************************************************************************
@@ -56,56 +56,46 @@ void ButtonHandling_executeTask(eButtonMode_t eEvent)
  *******************************************************************************/
 static void ButtonHandling_task(void * pvParameters)
 {
-  eButtonMode_t eAsyncMsg = IDLE_BUTTON;
-  unsigned int time = 0;
+    eButtonMode_t eAsyncMsg = IDLE_BUTTON;
+    unsigned int time = 0;
 
-  for(;;)
-  {
-    xQueueReceive(tsQueueForButton, &eAsyncMsg, 500);
-    uint32_t value[1];
-    Gpio_get(BUTTON_GPIO_MODE, value);
+    for(;;) {
+        xQueueReceive(tsQueueForButton, &eAsyncMsg, 500);
+        uint32_t value[1];
+        Gpio_get(BUTTON_GPIO_MODE, value);
 
-    switch(eAsyncMsg)
-    {
-      case IDLE_BUTTON:
-      {
-        if(value[0] == FALSE)
-        {
-          time = 0;
-          ButtonHandling_executeTask(RISING_BUTTON);
+        switch(eAsyncMsg) {
+            case IDLE_BUTTON: {
+                if(value[0] == FALSE) {
+                    time = 0;
+                    ButtonHandling_executeTask(RISING_BUTTON);
+                }
+            }
+            break;
+
+            case RISING_BUTTON: {
+                if(value[0] == TRUE) {
+                    ButtonHandling_executeTask(FALLING_BUTTON);
+                } else {
+                    time++;
+
+                    if(time == TIME_TO_REBOOT) {
+                        System_cpuReset();
+                    }
+                }
+            }
+            break;
+
+            case FALLING_BUTTON: {
+                //ButtonHandling_execution(time);
+                time = 0;
+                ButtonHandling_executeTask(IDLE_BUTTON);
+            }
+            break;
+
+            default:
+                ;
         }
-      }
-      break;
-
-      case RISING_BUTTON:
-      {
-        if(value[0] == TRUE)
-        {
-          ButtonHandling_executeTask(FALLING_BUTTON);
-        }
-        else
-        {
-          time++;
-
-          if(time == TIME_TO_REBOOT)
-          {
-            System_cpuReset();
-          }
-        }
-      }
-      break;
-
-      case FALLING_BUTTON:
-      {
-        //ButtonHandling_execution(time);
-        time = 0;
-        ButtonHandling_executeTask(IDLE_BUTTON);
-      }
-      break;
-
-      default:
-        ;
     }
-  }
 }
 

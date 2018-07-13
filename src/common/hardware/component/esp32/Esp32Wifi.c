@@ -16,15 +16,15 @@ static wifi_config_t Esp32Wifi_getSSIDAndPass(void);
  *******************************************************************************/
 void Esp32Wifi_init()
 {
-  wifi_init_config_t cfg = WIFI_INIT_CONFIG_DEFAULT();
-  ESP_ERROR_CHECK(esp_wifi_init(&cfg));
-  ESP_ERROR_CHECK(esp_wifi_set_storage(WIFI_STORAGE_RAM));
-  ESP_ERROR_CHECK(esp_wifi_set_mode(WIFI_MODE_STA));
-  wifi_config_t sta_config = Esp32Wifi_getSSIDAndPass();
-  ESP_ERROR_CHECK(esp_wifi_set_config(WIFI_IF_STA, &sta_config));
-  ESP_ERROR_CHECK(esp_wifi_set_country(WIFI_COUNTRY_EU));
-  ESP_ERROR_CHECK(esp_wifi_start());
-  BarDebug_info("Free Heap at %d = %d\n", __LINE__, OsGetFreeHeapSize());
+    wifi_init_config_t cfg = WIFI_INIT_CONFIG_DEFAULT();
+    ESP_ERROR_CHECK(esp_wifi_init(&cfg));
+    ESP_ERROR_CHECK(esp_wifi_set_storage(WIFI_STORAGE_RAM));
+    ESP_ERROR_CHECK(esp_wifi_set_mode(WIFI_MODE_STA));
+    wifi_config_t sta_config = Esp32Wifi_getSSIDAndPass();
+    ESP_ERROR_CHECK(esp_wifi_set_config(WIFI_IF_STA, &sta_config));
+    ESP_ERROR_CHECK(esp_wifi_set_country(WIFI_COUNTRY_EU));
+    ESP_ERROR_CHECK(esp_wifi_start());
+    BarDebug_info("Free Heap at %d = %d\n", __LINE__, OsGetFreeHeapSize());
 }
 
 /******************************************************************************
@@ -35,15 +35,13 @@ void Esp32Wifi_init()
  *******************************************************************************/
 void Esp32Wifi_saveSSIDAndPass(const char * ssid, const char * password)
 {
-  if(Fs_write(SSID_WIFI_FILE, ssid, SSID_WIFI_FILE) != ESP_OK)
-  {
-    BarDebug_err("Error to save SSID\n");
-  }
+    if(Fs_write(SSID_WIFI_FILE, ssid, SSID_WIFI_FILE) != ESP_OK) {
+        BarDebug_err("Error to save SSID\n");
+    }
 
-  if(Fs_write(PASSWORD_WIFI_FILE, password, PASSWORD_WIFI_FILE) != ESP_OK)
-  {
-    BarDebug_err("Error to save password\n");
-  }
+    if(Fs_write(PASSWORD_WIFI_FILE, password, PASSWORD_WIFI_FILE) != ESP_OK) {
+        BarDebug_err("Error to save password\n");
+    }
 }
 
 /******************************************************************************
@@ -54,25 +52,24 @@ void Esp32Wifi_saveSSIDAndPass(const char * ssid, const char * password)
  *******************************************************************************/
 static wifi_config_t Esp32Wifi_getSSIDAndPass(void)
 {
-  wifi_config_t wifi_config;
-  char * ssid = (char *)Esp32Wifi_getSSID();
-  char * password = (char *)Esp32Wifi_getPassword();
+    wifi_config_t wifi_config;
+    char * ssid = (char *)Esp32Wifi_getSSID();
+    char * password = (char *)Esp32Wifi_getPassword();
 
-  if((password != NULL) && (ssid != NULL))
-  {
-    wifi_config.sta.bssid_set = false;
-    memcpy(wifi_config.sta.ssid, ssid, strlen(ssid) + 1);
-    memcpy(wifi_config.sta.password, password, strlen(password) + 1);
-    BarDebug_info("-- %s, %s\n", wifi_config.sta.ssid, wifi_config.sta.password);
-  }
+    if((password != NULL) && (ssid != NULL)) {
+        wifi_config.sta.bssid_set = false;
+        memcpy(wifi_config.sta.ssid, ssid, strlen(ssid) + 1);
+        memcpy(wifi_config.sta.password, password, strlen(password) + 1);
+        BarDebug_info("-- %s, %s\n", wifi_config.sta.ssid, wifi_config.sta.password);
+    }
 
-  if(ssid != NULL)
-    OsFree(ssid);
+    if(ssid != NULL)
+        OsFree(ssid);
 
-  if(password != NULL)
-    OsFree(password);
+    if(password != NULL)
+        OsFree(password);
 
-  return wifi_config;
+    return wifi_config;
 }
 
 /******************************************************************************
@@ -82,7 +79,7 @@ static wifi_config_t Esp32Wifi_getSSIDAndPass(void)
  *******************************************************************************/
 const char * Esp32Wifi_getSSID(void)
 {
-  return Fs_read(SSID_WIFI_FILE, SSID_WIFI_FILE);
+    return Fs_read(SSID_WIFI_FILE, SSID_WIFI_FILE);
 }
 
 /******************************************************************************
@@ -92,7 +89,7 @@ const char * Esp32Wifi_getSSID(void)
  *******************************************************************************/
 const char * Esp32Wifi_getPassword(void)
 {
-  return Fs_read(PASSWORD_WIFI_FILE, PASSWORD_WIFI_FILE);
+    return Fs_read(PASSWORD_WIFI_FILE, PASSWORD_WIFI_FILE);
 }
 
 
@@ -103,7 +100,7 @@ const char * Esp32Wifi_getPassword(void)
  *******************************************************************************/
 void Esp32Wifi_removeSsidAndPass(void)
 {
-  Fs_delete(SSID_WIFI_FILE, SSID_WIFI_FILE);
-  Fs_delete(PASSWORD_WIFI_FILE, PASSWORD_WIFI_FILE);
+    Fs_delete(SSID_WIFI_FILE, SSID_WIFI_FILE);
+    Fs_delete(PASSWORD_WIFI_FILE, PASSWORD_WIFI_FILE);
 }
 #endif // ESP32

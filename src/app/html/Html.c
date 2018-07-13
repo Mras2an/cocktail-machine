@@ -55,43 +55,43 @@ static void html_indexTitle(char * data);
 
 static void html_indexBegin(char * data)
 {
-  const static char http_begin[] = "<!DOCTYPE html>"
-                                   "<html>\n"
-                                   "<head>\n"
-                                   "  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n"
-                                   /*CSS*/
-                                   "<style>\n"
-                                   "h1 {\n"
-                                   "color: white;\n"
-                                   "text-align: center;\n"
-                                   "}\n"
-                                   "p {\n"
-                                   "font-family: verdana;\n"
-                                   "font-size: 20px;\n"
-                                   "}\n"
-                                   "body {\n"
-                                   "background-color: lightblue;\n"
-                                   "}\n"
-                                   "table\n"
-                                   "{\n"
-                                   "border-collapse: collapse;\n"
-                                   "}\n"
-                                   "td\n"
-                                   "{\n"
-                                   "border: 1px solid black;\n"
-                                   "}\n"
-                                   ".button {\n"
-                                   " width:85px;\n"
-                                   " height:85px;\n"
-                                   " background:#fafafa;\n"
-                                   " box-shadow:2px 2px 8px #aaa;\n"
-                                   " font:bold 13px Arial;\n"
-                                   " border-radius:50%;\n"
-                                   " color:#555;\n"
-                                   "}\n"
-                                   "</style>\n";
-  /* end css */
-  memcpy(data, http_begin, strlen(http_begin));
+    const static char http_begin[] = "<!DOCTYPE html>"
+                                     "<html>\n"
+                                     "<head>\n"
+                                     "  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n"
+                                     /*CSS*/
+                                     "<style>\n"
+                                     "h1 {\n"
+                                     "color: white;\n"
+                                     "text-align: center;\n"
+                                     "}\n"
+                                     "p {\n"
+                                     "font-family: verdana;\n"
+                                     "font-size: 20px;\n"
+                                     "}\n"
+                                     "body {\n"
+                                     "background-color: lightblue;\n"
+                                     "}\n"
+                                     "table\n"
+                                     "{\n"
+                                     "border-collapse: collapse;\n"
+                                     "}\n"
+                                     "td\n"
+                                     "{\n"
+                                     "border: 1px solid black;\n"
+                                     "}\n"
+                                     ".button {\n"
+                                     " width:85px;\n"
+                                     " height:85px;\n"
+                                     " background:#fafafa;\n"
+                                     " box-shadow:2px 2px 8px #aaa;\n"
+                                     " font:bold 13px Arial;\n"
+                                     " border-radius:50%;\n"
+                                     " color:#555;\n"
+                                     "}\n"
+                                     "</style>\n";
+    /* end css */
+    memcpy(data, http_begin, strlen(http_begin));
 }
 
 /******************************************************************************
@@ -101,8 +101,8 @@ static void html_indexBegin(char * data)
  *******************************************************************************/
 static void html_indexTitle(char * data)
 {
-  strcat(data,
-         "<title>Connected bar</title><link href=\"https://www.bodipure.com/wp-content/uploads/2016/09/B-favicon.png\" rel=\"icon\" type=\"image/x-icon\" /></head><body><h1>Welcome, on Quentin's bar!</h1><hr color=\"white\"><p>Please select your shooter or cocktail:</p>");
+    strcat(data,
+           "<title>Connected bar</title><link href=\"https://www.bodipure.com/wp-content/uploads/2016/09/B-favicon.png\" rel=\"icon\" type=\"image/x-icon\" /></head><body><h1>Welcome, on Quentin's bar!</h1><hr color=\"white\"><p>Please select your shooter or cocktail:</p>");
 }
 
 /******************************************************************************
@@ -122,7 +122,7 @@ static void html_indexTitle(char * data)
  *******************************************************************************/
 static void html_tabBegin(char * data)
 {
-  strcat(data, "<center><table>");
+    strcat(data, "<center><table>");
 }
 
 /******************************************************************************
@@ -146,9 +146,9 @@ static void html_tabBegin(char * data)
  *******************************************************************************/
 static void html_tabColumnBegin(char * data, char *name)
 {
-  strcat(data, "<tr><td>");
-  strcat(data, name);
-  strcat(data, "</td>");
+    strcat(data, "<tr><td>");
+    strcat(data, name);
+    strcat(data, "</td>");
 }
 
 /******************************************************************************
@@ -159,9 +159,9 @@ static void html_tabColumnBegin(char * data, char *name)
  *******************************************************************************/
 static void html_tabColumnMiddle(char * data, char *name)
 {
-  strcat(data, "<td>");
-  strcat(data, name);
-  strcat(data, "</td>");
+    strcat(data, "<td>");
+    strcat(data, name);
+    strcat(data, "</td>");
 }
 
 /******************************************************************************
@@ -172,9 +172,9 @@ static void html_tabColumnMiddle(char * data, char *name)
  *******************************************************************************/
 static void html_tabColumnEnd(char * data, char *name)
 {
-  strcat(data, "<td>");
-  strcat(data, name);
-  strcat(data, "</td></tr>");
+    strcat(data, "<td>");
+    strcat(data, name);
+    strcat(data, "</td></tr>");
 }
 
 /******************************************************************************
@@ -184,7 +184,7 @@ static void html_tabColumnEnd(char * data, char *name)
  *******************************************************************************/
 static void html_tabEnd(char * data)
 {
-  strcat(data, "</table></center>");
+    strcat(data, "</table></center>");
 }
 
 /******************************************************************************
@@ -196,12 +196,12 @@ static void html_tabEnd(char * data)
  *******************************************************************************/
 void html_addButtonCss(char * data, char * page, char * buttonName)
 {
-  /* bp with css */
-  strcat(data, "<input type=\"button\" class=\"button\" value=\"");
-  strcat(data, buttonName);
-  strcat(data, "\" onclick=\"window.location.href='http://"MY_IP);
-  strcat(data, page);
-  strcat(data, "'\" >\n");
+    /* bp with css */
+    strcat(data, "<input type=\"button\" class=\"button\" value=\"");
+    strcat(data, buttonName);
+    strcat(data, "\" onclick=\"window.location.href='http://"MY_IP);
+    strcat(data, page);
+    strcat(data, "'\" >\n");
 }
 
 /******************************************************************************
@@ -241,9 +241,9 @@ void html_addButtonCss(char * data, char * page, char * buttonName)
  *******************************************************************************/
 static void html_indexEnd(char * data)
 {
-  const static char http_end[] = "</body>\n"
-                                 "</html>\n";
-  strcat(data, http_end);
+    const static char http_end[] = "</body>\n"
+                                   "</html>\n";
+    strcat(data, http_end);
 }
 
 /******************************************************************************
@@ -253,63 +253,54 @@ static void html_indexEnd(char * data)
  *******************************************************************************/
 static void http_server_netconn_serve(struct netconn *conn)
 {
-  struct netbuf *inbuf;
-  char *buf;
-  u16_t buflen;
-  err_t err;
-  err = netconn_recv(conn, &inbuf);
+    struct netbuf *inbuf;
+    char *buf;
+    u16_t buflen;
+    err_t err;
+    err = netconn_recv(conn, &inbuf);
 
-  if(err == ERR_OK)
-  {
-    netbuf_data(inbuf, (void**) &buf, &buflen);
+    if(err == ERR_OK) {
+        netbuf_data(inbuf, (void**) &buf, &buflen);
 
-    if(buflen >= 5 &&
-       buf[0] == 'G' &&
-       buf[1] == 'E' &&
-       buf[2] == 'T' &&
-       buf[3] == ' ' &&
-       buf[4] == '/')
-    {
-      netconn_write(conn, http_html_hdr, sizeof(http_html_hdr) - 1, NETCONN_NOCOPY);
-      netconn_write(conn, http_index_hml, sizeof(http_index_hml) - 1, NETCONN_NOCOPY);
-      int numCocktail = Cocktail_isCocktailExiste(&buf[5]);
+        if(buflen >= 5 &&
+           buf[0] == 'G' &&
+           buf[1] == 'E' &&
+           buf[2] == 'T' &&
+           buf[3] == ' ' &&
+           buf[4] == '/') {
+            netconn_write(conn, http_html_hdr, sizeof(http_html_hdr) - 1, NETCONN_NOCOPY);
+            netconn_write(conn, http_index_hml, sizeof(http_index_hml) - 1, NETCONN_NOCOPY);
+            int numCocktail = Cocktail_isCocktailExiste(&buf[5]);
 
-      if(numCocktail != 255)
-      {
-        BarDebug_info("Free Heap = %d o\n", OsGetFreeHeapSize());
-        QueueCocktail_received(numCocktail);
-      }
+            if(numCocktail != 255) {
+                BarDebug_info("Free Heap = %d o\n", OsGetFreeHeapSize());
+                QueueCocktail_received(numCocktail);
+            }
 
-      if(strncmp(&buf[5], "Update", strlen("Update")) == 0)
-      {
-        if(Fs_write("Update", "Update", "Update") != ESP_OK)
-        {
-          BarDebug_err("Error to update\n");
+            if(strncmp(&buf[5], "Update", strlen("Update")) == 0) {
+                if(Fs_write("Update", "Update", "Update") != ESP_OK) {
+                    BarDebug_err("Error to update\n");
+                } else {
+                    System_cpuReset();
+                }
+            }
+
+            if(strncmp(&buf[5], "AxeX+1", strlen("AxeX+1")) == 0) {
+                BarDebug_info("Move AxeX+1\n");
+                MotorHandling_setPositionOnX(1);
+            }
+
+            if(strncmp(&buf[5], "Pump+2", strlen("Pump+2")) == 0) {
+                BarDebug_info("Clean Pump+2\n");
+                MotorHandling_getAMeasureOnPump(2, MOTOR_PUMP_3);
+                MotorHandling_getAMeasureOnPump(2, MOTOR_PUMP_2);
+                MotorHandling_getAMeasureOnPump(2, MOTOR_PUMP_1);
+            }
         }
-        else
-        {
-          System_cpuReset();
-        }
-      }
-
-      if(strncmp(&buf[5], "AxeX+1", strlen("AxeX+1")) == 0)
-      {
-        BarDebug_info("Move AxeX+1\n");
-        MotorHandling_setPositionOnX(1);
-      }
-
-      if(strncmp(&buf[5], "Pump+2", strlen("Pump+2")) == 0)
-      {
-        BarDebug_info("Clean Pump+2\n");
-        MotorHandling_getAMeasureOnPump(2, MOTOR_PUMP_3);
-        MotorHandling_getAMeasureOnPump(2, MOTOR_PUMP_2);
-        MotorHandling_getAMeasureOnPump(2, MOTOR_PUMP_1);
-      }
     }
-  }
 
-  netconn_close(conn);
-  netbuf_delete(inbuf);
+    netconn_close(conn);
+    netbuf_delete(inbuf);
 }
 
 /******************************************************************************
@@ -319,26 +310,23 @@ static void http_server_netconn_serve(struct netconn *conn)
  *******************************************************************************/
 static void http_server(void *pvParameters)
 {
-  struct netconn *conn, *newconn;
-  err_t err;
-  conn = netconn_new(NETCONN_TCP);
-  netconn_bind(conn, NULL, 80);
-  netconn_listen(conn);
+    struct netconn *conn, *newconn;
+    err_t err;
+    conn = netconn_new(NETCONN_TCP);
+    netconn_bind(conn, NULL, 80);
+    netconn_listen(conn);
 
-  do
-  {
-    err = netconn_accept(conn, &newconn);
+    do {
+        err = netconn_accept(conn, &newconn);
 
-    if(err == ERR_OK)
-    {
-      http_server_netconn_serve(newconn);
-      netconn_delete(newconn);
-    }
-  }
-  while(err == ERR_OK);
+        if(err == ERR_OK) {
+            http_server_netconn_serve(newconn);
+            netconn_delete(newconn);
+        }
+    } while(err == ERR_OK);
 
-  netconn_close(conn);
-  netconn_delete(conn);
+    netconn_close(conn);
+    netconn_delete(conn);
 }
 
 /******************************************************************************
@@ -348,22 +336,22 @@ static void http_server(void *pvParameters)
  *******************************************************************************/
 void Html_init(void)
 {
-  memset(http_index_hml, '\0', 20000);
-  html_indexBegin(http_index_hml);
-  html_indexTitle(http_index_hml);
-  html_tabBegin(http_index_hml);
-  html_tabColumnBegin(http_index_hml, "Selection");
-  html_tabColumnMiddle(http_index_hml, "Ajouter");
-  html_tabColumnEnd(http_index_hml, "Fourni");
-  Cocktail_createHtmlCodeForCocktails(http_index_hml);
-  html_tabEnd(http_index_hml);
-  char data[strlen(info) + 4];
-  memset(data, '\0', strlen(info) + 4);
-  sprintf(data, info, (OsGetFreeHeapSize()/1024));
-  strcat(http_index_hml, data);
-  html_addButtonCss(http_index_hml, "Update", "Update");
-  html_addButtonCss(http_index_hml, "AxeX+1", "AxeX+1");
-  html_addButtonCss(http_index_hml, "Pump+2", "Pump+2");
-  html_indexEnd(http_index_hml);
-  xTaskCreate(&http_server, "http_server", 9216, NULL, 5, NULL);
+    memset(http_index_hml, '\0', 20000);
+    html_indexBegin(http_index_hml);
+    html_indexTitle(http_index_hml);
+    html_tabBegin(http_index_hml);
+    html_tabColumnBegin(http_index_hml, "Selection");
+    html_tabColumnMiddle(http_index_hml, "Ajouter");
+    html_tabColumnEnd(http_index_hml, "Fourni");
+    Cocktail_createHtmlCodeForCocktails(http_index_hml);
+    html_tabEnd(http_index_hml);
+    char data[strlen(info) + 4];
+    memset(data, '\0', strlen(info) + 4);
+    sprintf(data, info, (OsGetFreeHeapSize()/1024));
+    strcat(http_index_hml, data);
+    html_addButtonCss(http_index_hml, "Update", "Update");
+    html_addButtonCss(http_index_hml, "AxeX+1", "AxeX+1");
+    html_addButtonCss(http_index_hml, "Pump+2", "Pump+2");
+    html_indexEnd(http_index_hml);
+    xTaskCreate(&http_server, "http_server", 9216, NULL, 5, NULL);
 }
