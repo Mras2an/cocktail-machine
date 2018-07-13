@@ -18,6 +18,7 @@ After this first version I'm looking for people to help me on this open source p
 
 Here is the list of features to improve the project (Do not hesitate to propose others):
 | State | Addons
+|---|---
 | ![todo](http://www.yabo-concept.ch/admin/themes/YaboConcept/images/icons/system/false.gif) | Submit an UX (User eXperience) and a design for the web page
 |  ![todo](http://www.yabo-concept.ch/admin/themes/YaboConcept/images/icons/system/false.gif) | Re-make the web page (css / html) according to the UX / design
 | ![todo](http://www.yabo-concept.ch/admin/themes/YaboConcept/images/icons/system/false.gif) | Fix the smartconfig bug
@@ -33,7 +34,7 @@ I know that any job deserves a salary but I have nothing to you offer. But I can
 
 Thank you for your time.
 
-##LICENSE TERMS [BSD]:
+## LICENSE TERMS [BSD]:
 
 Copyright (c) 2018. Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
