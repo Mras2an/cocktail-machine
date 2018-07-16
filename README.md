@@ -32,7 +32,9 @@ Here is the list of features to improve the project (Do not hesitate to propose 
 | ![todo](http://www.yabo-concept.ch/admin/themes/YaboConcept/images/icons/system/false.gif) | Create doxygen documentation
 | ![todo](http://www.yabo-concept.ch/admin/themes/YaboConcept/images/icons/system/false.gif) | And more ...
 
-I know that any job deserves a salary but I have nothing to you offer. But I can send you a bare PCB  to make your own machine (only for the first 5 most motivated volunteers). 
+I know that any job deserves a salary but I have nothing to you offer. But I can send you a bare PCB  to make your own machine (only for the first 5 most motivated volunteers).
+
+Please, if you are interested here is the mailing list to discuss new features or modifications: "connectedcocktailmachine@gmail.com"
 
 Thank you for your time.
 
