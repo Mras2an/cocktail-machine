@@ -3,14 +3,13 @@
 
 #include "esp_ota_ops.h"
 
-typedef enum
-{
-  OTA_OK = 0,
-  OTA_ERR_PARTITION_NOT_FOUND = 1,
-  OTA_ERR_PARTITION_NOT_ACTIVATED = 2,
-  OTA_ERR_BEGIN_FAILED = 3,
-  OTA_ERR_WRITE_FAILED = 4,
-  OTA_ERR_END_FAILED = 5,
+typedef enum {
+    OTA_OK = 0,
+    OTA_ERR_PARTITION_NOT_FOUND = 1,
+    OTA_ERR_PARTITION_NOT_ACTIVATED = 2,
+    OTA_ERR_BEGIN_FAILED = 3,
+    OTA_ERR_WRITE_FAILED = 4,
+    OTA_ERR_END_FAILED = 5,
 } TOtaResult;
 
 void Esp32Ota_init();

@@ -11,13 +11,12 @@
  *******************************************************************************/
 void Esp32Fs_init()
 {
-  esp_err_t err = nvs_flash_init();
+    esp_err_t err = nvs_flash_init();
 
-  if(err == ESP_ERR_NVS_NO_FREE_PAGES)
-  {
-    BarDebug_err("Init: %x\n", err);
-    ESP_ERROR_CHECK(err);
-  }
+    if(err == ESP_ERR_NVS_NO_FREE_PAGES) {
+        BarDebug_err("Init: %x\n", err);
+        ESP_ERROR_CHECK(err);
+    }
 }
 
 /*!*****************************************************************************
@@ -30,36 +29,33 @@ void Esp32Fs_init()
  *******************************************************************************/
 esp_err_t Esp32Fs_write(const char * filename, const char * data, const char * key)
 {
-  nvs_handle my_handle;
-  esp_err_t err;
-  err = nvs_open(filename, NVS_READWRITE, &my_handle);
+    nvs_handle my_handle;
+    esp_err_t err;
+    err = nvs_open(filename, NVS_READWRITE, &my_handle);
 
-  if(err != ESP_OK)
-  {
-    BarDebug_err("Open: %x\n", err);
-    return err;
-  }
+    if(err != ESP_OK) {
+        BarDebug_err("Open: %x\n", err);
+        return err;
+    }
 
-  err = nvs_set_str(my_handle, key, data);
+    err = nvs_set_str(my_handle, key, data);
 
-  if(err != ESP_OK && err != ESP_ERR_NVS_NOT_FOUND)
-  {
-    BarDebug_err("Write: %x\n", err);
+    if(err != ESP_OK && err != ESP_ERR_NVS_NOT_FOUND) {
+        BarDebug_err("Write: %x\n", err);
+        nvs_close(my_handle);
+        return err;
+    }
+
+    err = nvs_commit(my_handle);
+
+    if(err != ESP_OK) {
+        BarDebug_err("Commit: %x\n", err);
+        nvs_close(my_handle);
+        return err;
+    }
+
     nvs_close(my_handle);
     return err;
-  }
-
-  err = nvs_commit(my_handle);
-
-  if(err != ESP_OK)
-  {
-    BarDebug_err("Commit: %x\n", err);
-    nvs_close(my_handle);
-    return err;
-  }
-
-  nvs_close(my_handle);
-  return err;
 }
 
 /*!*****************************************************************************
@@ -72,36 +68,33 @@ esp_err_t Esp32Fs_write(const char * filename, const char * data, const char * k
  *******************************************************************************/
 esp_err_t Esp32Fs_write_i16(const char * filename, const int16_t data, const char * key)
 {
-  nvs_handle my_handle;
-  esp_err_t err;
-  err = nvs_open(filename, NVS_READWRITE, &my_handle);
+    nvs_handle my_handle;
+    esp_err_t err;
+    err = nvs_open(filename, NVS_READWRITE, &my_handle);
 
-  if(err != ESP_OK)
-  {
-    BarDebug_err("Open: %x\n", err);
-    return err;
-  }
+    if(err != ESP_OK) {
+        BarDebug_err("Open: %x\n", err);
+        return err;
+    }
 
-  err = nvs_set_i16(my_handle, key, data);
+    err = nvs_set_i16(my_handle, key, data);
 
-  if(err != ESP_OK && err != ESP_ERR_NVS_NOT_FOUND)
-  {
-    BarDebug_err("Write: %x\n", err);
+    if(err != ESP_OK && err != ESP_ERR_NVS_NOT_FOUND) {
+        BarDebug_err("Write: %x\n", err);
+        nvs_close(my_handle);
+        return err;
+    }
+
+    err = nvs_commit(my_handle);
+
+    if(err != ESP_OK) {
+        BarDebug_err("Commit: %x\n", err);
+        nvs_close(my_handle);
+        return err;
+    }
+
     nvs_close(my_handle);
     return err;
-  }
-
-  err = nvs_commit(my_handle);
-
-  if(err != ESP_OK)
-  {
-    BarDebug_err("Commit: %x\n", err);
-    nvs_close(my_handle);
-    return err;
-  }
-
-  nvs_close(my_handle);
-  return err;
 }
 
 
@@ -114,46 +107,42 @@ esp_err_t Esp32Fs_write_i16(const char * filename, const int16_t data, const cha
  *******************************************************************************/
 char * Esp32Fs_read(const char * filename, const char * key)
 {
-  nvs_handle my_handle;
-  esp_err_t err;
-  err = nvs_open(filename, NVS_READWRITE, &my_handle);
+    nvs_handle my_handle;
+    esp_err_t err;
+    err = nvs_open(filename, NVS_READWRITE, &my_handle);
 
-  if(err != ESP_OK)
-  {
-    BarDebug_err("Open: %x\n", err);
-    return NULL;
-  }
+    if(err != ESP_OK) {
+        BarDebug_err("Open: %x\n", err);
+        return NULL;
+    }
 
-  size_t required_size;
-  err = nvs_get_str(my_handle, key, NULL, &required_size);
+    size_t required_size;
+    err = nvs_get_str(my_handle, key, NULL, &required_size);
 
-  if(err != ESP_OK)
-  {
-    BarDebug_info("File NOT found or wrong size: %x\n", err);
+    if(err != ESP_OK) {
+        BarDebug_info("File NOT found or wrong size: %x\n", err);
+        nvs_close(my_handle);
+        return NULL;
+    }
+
+    char * data = (char *) OsMalloc(required_size * sizeof(char));
+
+    if(data == NULL) {
+        BarDebug_err("Malloc\n");
+        return NULL;
+    }
+
+    err = nvs_get_str(my_handle, key, data, &required_size);
+
+    if(err != ESP_OK) {
+        BarDebug_info("Read data: %x\n", err);
+        nvs_close(my_handle);
+        OsFree(data);
+        return NULL;
+    }
+
     nvs_close(my_handle);
-    return NULL;
-  }
-
-  char * data = (char *) OsMalloc(required_size * sizeof(char));
-
-  if(data == NULL)
-  {
-    BarDebug_err("Malloc\n");
-    return NULL;
-  }
-
-  err = nvs_get_str(my_handle, key, data, &required_size);
-
-  if(err != ESP_OK)
-  {
-    BarDebug_info("Read data: %x\n", err);
-    nvs_close(my_handle);
-    OsFree(data);
-    return NULL;
-  }
-
-  nvs_close(my_handle);
-  return data;
+    return data;
 }
 
 /*!*****************************************************************************
@@ -165,28 +154,26 @@ char * Esp32Fs_read(const char * filename, const char * key)
  *******************************************************************************/
 int16_t Esp32Fs_read_i16(const char * filename, const char * key)
 {
-  nvs_handle my_handle;
-  esp_err_t err;
-  err = nvs_open(filename, NVS_READWRITE, &my_handle);
+    nvs_handle my_handle;
+    esp_err_t err;
+    err = nvs_open(filename, NVS_READWRITE, &my_handle);
 
-  if(err != ESP_OK)
-  {
-    BarDebug_err("Open: %x\n", err);
-    return NULL;
-  }
+    if(err != ESP_OK) {
+        BarDebug_err("Open: %x\n", err);
+        return NULL;
+    }
 
-  int16_t valOut;
-  err = nvs_get_i16(my_handle, key, &valOut);
+    int16_t valOut;
+    err = nvs_get_i16(my_handle, key, &valOut);
 
-  if(err != ESP_OK)
-  {
-    BarDebug_info("Data NOT found: %x\n", err);
+    if(err != ESP_OK) {
+        BarDebug_info("Data NOT found: %x\n", err);
+        nvs_close(my_handle);
+        return 0;
+    }
+
     nvs_close(my_handle);
-    return 0;
-  }
-
-  nvs_close(my_handle);
-  return valOut;
+    return valOut;
 }
 /*!*****************************************************************************
  * \fn         int Esp32Fs_exists(const char * filename)
@@ -196,17 +183,16 @@ int16_t Esp32Fs_read_i16(const char * filename, const char * key)
  *******************************************************************************/
 int Esp32Fs_exists(const char * filename)
 {
-  nvs_handle my_handle;
-  esp_err_t err;
-  err = nvs_open(filename, NVS_READONLY, &my_handle);
+    nvs_handle my_handle;
+    esp_err_t err;
+    err = nvs_open(filename, NVS_READONLY, &my_handle);
 
-  if(err != ESP_OK)
-  {
-    return 0;
-  }
+    if(err != ESP_OK) {
+        return 0;
+    }
 
-  nvs_close(my_handle);
-  return 1;
+    nvs_close(my_handle);
+    return 1;
 }
 
 /*!*****************************************************************************
@@ -218,22 +204,21 @@ int Esp32Fs_exists(const char * filename)
  *******************************************************************************/
 int Esp32Fs_getLength(const char * filename, const char * key)
 {
-  nvs_handle my_handle;
+    nvs_handle my_handle;
 
-  if(nvs_open(filename, NVS_READONLY, &my_handle) != ESP_OK)
-    return ESP_FAIL;
+    if(nvs_open(filename, NVS_READONLY, &my_handle) != ESP_OK)
+        return ESP_FAIL;
 
-  size_t required_size;
+    size_t required_size;
 
-  if(nvs_get_str(my_handle, key, NULL, &required_size) != ESP_OK)
-  {
-    BarDebug_err("File NOT found or wrong size.\n");
+    if(nvs_get_str(my_handle, key, NULL, &required_size) != ESP_OK) {
+        BarDebug_err("File NOT found or wrong size.\n");
+        nvs_close(my_handle);
+        return ESP_FAIL;
+    }
+
     nvs_close(my_handle);
-    return ESP_FAIL;
-  }
-
-  nvs_close(my_handle);
-  return (int)required_size;
+    return (int)required_size;
 }
 
 /*!*****************************************************************************
@@ -255,15 +240,14 @@ void Esp32Fs_cleanup()
  *******************************************************************************/
 int Esp32Fs_delete(const char * filename, const char * key)
 {
-  nvs_handle my_handle;
+    nvs_handle my_handle;
 
-  if(nvs_open(filename, NVS_READWRITE, &my_handle) != ESP_OK)
-  {
-    BarDebug_err("Open\n");
-    return ESP_FAIL;
-  }
+    if(nvs_open(filename, NVS_READWRITE, &my_handle) != ESP_OK) {
+        BarDebug_err("Open\n");
+        return ESP_FAIL;
+    }
 
-  return nvs_erase_key(my_handle, key);
+    return nvs_erase_key(my_handle, key);
 }
 
 /*!*****************************************************************************
@@ -275,15 +259,14 @@ int Esp32Fs_delete(const char * filename, const char * key)
  *******************************************************************************/
 int Esp32Fs_delete_all(const char * filename)
 {
-  nvs_handle my_handle;
+    nvs_handle my_handle;
 
-  if(nvs_open(filename, NVS_READWRITE, &my_handle) != ESP_OK)
-  {
-    BarDebug_err("Open\n");
-    return ESP_FAIL;
-  }
+    if(nvs_open(filename, NVS_READWRITE, &my_handle) != ESP_OK) {
+        BarDebug_err("Open\n");
+        return ESP_FAIL;
+    }
 
-  return nvs_erase_all(my_handle);
+    return nvs_erase_all(my_handle);
 }
 
 #endif // ESP32

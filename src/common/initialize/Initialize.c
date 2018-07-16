@@ -15,17 +15,17 @@
  ***************************************************************************************************/
 void Initialize_init(void)
 {
-  Fs_init();
-  CpuDelay_init();
-  Ota_init();
-  //Wifi_saveSSIDAndPass("xxxx", "xxxxx");
-  sLedRgbGpioConfig_t ledConfig;
-  ledConfig.red = LED_GPIO_RED;
-  ledConfig.green = LED_GPIO_GREEN;
-  ledConfig.blue = LED_GPIO_BLUE;
-  LedRGBHandling_Init(&ledConfig);
-  BarDebug_info("LED RED\n");
-  LedRGBHandling_ExecuteLedTaskFromISR(RED_LED);
-  MotorHandling_init();
-  MotorHandling_setInitialPosition();
+    Fs_init();
+    CpuDelay_init();
+    Ota_init();
+    //Wifi_saveSSIDAndPass("xxxx", "xxxxx");
+    sLedRgbGpioConfig_t ledConfig;
+    ledConfig.red = LED_GPIO_RED;
+    ledConfig.green = LED_GPIO_GREEN;
+    ledConfig.blue = LED_GPIO_BLUE;
+    LedRGBHandling_Init(&ledConfig);
+    BarDebug_info("LED RED\n");
+    LedRGBHandling_ExecuteLedTaskFromISR(RED_LED);
+    MotorHandling_init();
+    MotorHandling_setInitialPosition();
 }
