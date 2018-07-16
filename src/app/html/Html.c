@@ -352,9 +352,9 @@ void Html_init(void)
   html_indexBegin(http_index_hml);
   html_indexTitle(http_index_hml);
   html_tabBegin(http_index_hml);
-  html_tabColumnBegin(http_index_hml, "Selection");
-  html_tabColumnMiddle(http_index_hml, "Ajouter");
-  html_tabColumnEnd(http_index_hml, "Fourni");
+  html_tabColumnBegin(http_index_hml, "Cocktail");
+  html_tabColumnMiddle(http_index_hml, "Ingredient(s) à ajouter");
+  html_tabColumnEnd(http_index_hml, "Ingredient(s) Fourni(s)");
   Cocktail_createHtmlCodeForCocktails(http_index_hml);
   html_tabEnd(http_index_hml);
   char data[strlen(info) + 4];
